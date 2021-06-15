@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>iThem</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./mystyle.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="./codemirror/lib/codemirror.js"></script>
+  <link href="./codemirror/lib/codemirror.css" rel="stylesheet" />
+  <script src="./codemirror/mode/javascript/javascript.js"></script>
+  <script src="./codemirror/addon/edit/closetag.js"></script>
+  <link href="./codemirror/theme/darcula.css" rel="stylesheet" />
+  <script src="./myscript2.js" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>iThem</h1>
+    <p>GENERATING MORE STRUCTURED RULES</p>
+  </div>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5 col-lg-5">
+        <div class="centered">
+
+          <div class="tab">
+            <button id="c1" class="tablinks" onclick="openTab(event, 'inlets')" autofocus><b>Inlets</b></button>
+            <button id="c2" class="tablinks" onclick="openTab(event, 'varia')"><b>Variables</b></button>
+            <button id="c3" class="tablinks" onclick="openTab(event, 'outlets')"><b>Outlets</b></button>
+            <button id="c4" class="tablinks" onclick="openTab(event, 'varia2')"><b>Variables2</b></button>
+          </div>
+
+          <div id="inlets" class="tabcontent">
+            <hr>
+            <h1>EXPLORER</h1>
+            <hr>
+            <div id="files">
+              <div class="file" >test.js</div>
+              <div class="file" >test2.js</div>
+              <div class="file" >test3.js</div>
+            </div>
+          </div>
+
+          <div id="varia" class="tabcontent">
+
+            <section class = "row border">
+              
+              <div>
+                
+                <main>
+                  <table class="table" id="table">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th id="t">NAME</th>
+                        <th id="t">TYPE</th>
+                        <th id="t">VALUE</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+                <button type="button" id="button" class="btn btn-success">Add</button>
+                </main>
+                
+                
+        
+              </div>
+             
+            </section>
+
+          </div>
+
+          <div id="outlets" class="tabcontent">
+            <table class="table" id="table2">
+              <thead>
+              <tr>
+                  <th id="t">NAME</th>
+                  <th></th>
+              </tr>
+              </thead>
+              <tbody id="tableBody2">
+              </tbody>
+          </table>
+          <button type="button" id="button2" class="btn btn-success">Add</button>
+
+
+          </div>
+
+          <div id="varia2" class="tabcontent">
+
+            <section class = "row border">
+              
+              <div>
+                
+                <main>
+                  <table id="table3" class="table table-hover">
+                    <thead>
+                      <tr>
+                          <th class = "text-center">NAME</th>
+                          <th class = "text-center">TYPE</th>
+                          <th class = "text-center">VALUE</th>
+                          <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="tableBody3">
+                    </tbody>
+                  </table>
+                
+                <button type="button" id="button4" class="btn btn-success">Add</button>
+                </main>
+                
+                
+        
+              </div>
+             
+            </section>
+
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="col-md-7 col-lg-7 ">
+        <div class="centered">
+          <textarea id="editor">Writing Your Own Code here</textarea>
+          <script>
+            var editor = CodeMirror.fromTextArea
+              (document.getElementById('editor'), {
+                mode: "javascript",
+                theme: "darcula",
+                lineNumbers: true,
+                autoCloseTags: true
+              });
+          //editor.setSize("800", "800");
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+</body>
+
+</html>
