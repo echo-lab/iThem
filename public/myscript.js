@@ -1,4 +1,4 @@
-
+//understanding code
 //for the cancel case to go back to the orginal value
 let edit_button = '<button type="button" id="edit_out" class="btn btn-primary">Edit</button>';
 
@@ -32,7 +32,7 @@ $(document).on('click', '#cancel_out', function() {
   //if there wasn't an input, alert the user to input a name
   else {
     outlet_name = '';
-    //does not allow the user cancel without saving once 
+    //does not allow the user cancel without saving once
     alert("Please insert a name!");
     return;
   }
@@ -178,7 +178,7 @@ $(document).on('click', '#cancel', function() {
   //if there wasn't an input, alert the user to input a name
   else {
     //outlet_name = '';
-    //does not allow the user cancel without saving once 
+    //does not allow the user cancel without saving once
     alert("Please try to insert something in all three fields!");
     return;
   }
@@ -194,12 +194,12 @@ $(document).on('click', '#cancel', function() {
 
 $(document).ready(function () {
 
-  //outlets: add button 
+  //outlets: add button
   $('#button2').click(function () {
     var table = $('#table2');
     var body = $('#tableBody2');
     var nextId = body.find('tr').length + 1;
-    table.append($('<tr><td style="display: none; float: none;">' + nextId + '</td>' + 
+    table.append($('<tr><td style="display: none; float: none;">' + nextId + '</td>' +
     '<td class="first_cell"><input class="input_class" placeholder="Name your outlet">' +
     '<div class="name" style="display:none"></div>' + '</td>' +
     '<td class="save_cancel">\
@@ -233,7 +233,7 @@ $(document).ready(function () {
         <button type="button" id="cancel" class="btn btn-danger">Cancel</button>\
         <button type="button" id="save" class="btn btn-success">Save</button>\
         </td>' +
-      '<td class="static_mode" style="display:none">' + 
+      '<td class="static_mode" style="display:none">' +
       '<button type="button" id="edit" class="btn btn-primary">Edit</button></td>' +
       '</tr>'));
   });
@@ -265,4 +265,3 @@ function resizeInput() {
   resizeInput.call(input); // immediately call the function
   this.style.width = this.value.length + "ch";
 }
-
