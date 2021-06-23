@@ -28,17 +28,21 @@ $(document).on('click', '#cancel_out', function() {
   if (name) {
     $(this).parent().parent().find(".name").show();
     $(this).parent().parent().find(".input_class").val(name);
+
+    $(this).parent().parent().find(".input_class").hide();
+    $(this).parent().hide();
+    $(this).parent().parent().append(edit_button);
   }
   //if there wasn't an input, alert the user to input a name
-  else {
-    outlet_name = '';
-    //does not allow the user cancel without saving once
-    alert("Please insert a name!");
-    return;
-  }
+  // else {
+  //   outlet_name = '';
+  //   //does not allow the user cancel without saving once
+  //   alert("Please insert a name!");
+  //   return;
+  // }
   $(this).parent().parent().find(".input_class").hide();
   $(this).parent().hide();
-  $(this).parent().parent().append(edit_button);
+  $(this).parent().parent().hide(edit_button);
 
 });
 
