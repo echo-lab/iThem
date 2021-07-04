@@ -33,13 +33,13 @@ $(document).on('click', '#cancel_out', function() {
     $(this).parent().hide();
     $(this).parent().parent().append(edit_button);
   }
-  //if there wasn't an input, alert the user to input a name
-  // else {
-  //   outlet_name = '';
-  //   //does not allow the user cancel without saving once
-  //   alert("Please insert a name!");
-  //   return;
-  // }
+  if there wasn't an input, alert the user to input a name
+  else {
+    outlet_name = '';
+    //does not allow the user cancel without saving once
+    alert("Please insert a name!");
+    return;
+  }
   $(this).parent().parent().find(".input_class").hide();
   $(this).parent().hide();
   $(this).parent().parent().hide(edit_button);
@@ -110,6 +110,7 @@ $(document).on('click', '#save', function() {
       return;
     }
   }
+
   else {
     alert("Your input have been saved successfully!");
   }
@@ -269,3 +270,14 @@ function resizeInput() {
   resizeInput.call(input); // immediately call the function
   this.style.width = this.value.length + "ch";
 }
+
+//alphanumeric algorithm
+// function checkAlphaNumeric(var_name.value) {
+//   var input = var_name.value;
+//   var numeric = /^([a-zA-Z0-9_]+)$/;
+//   if (!numeric.test(input)) {
+//     document.getElementById('errorText').style.display = '';
+//   } else {
+//     document.getElementById('errorText').style.display = 'none';
+//   }
+// }
