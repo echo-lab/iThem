@@ -33,13 +33,13 @@ $(document).on('click', '#cancel_out', function() {
     $(this).parent().hide();
     $(this).parent().parent().append(edit_button);
   }
-  if there wasn't an input, alert the user to input a name
-  else {
-    outlet_name = '';
-    //does not allow the user cancel without saving once
-    alert("Please insert a name!");
-    return;
-  }
+  // if there wasn't an input, alert the user to input a name
+  // else {
+  //   outlet_name = '';
+  //   //does not allow the user cancel without saving once
+  //   alert("Please insert a name!");
+  //   return;
+  // }
   $(this).parent().parent().find(".input_class").hide();
   $(this).parent().hide();
   $(this).parent().parent().hide(edit_button);
