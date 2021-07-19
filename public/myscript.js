@@ -243,6 +243,49 @@ $(document).ready(function () {
       '</tr>'));
   });
 
+  //outlets: save button
+  // $('#save_out').click( function() {
+  //   //debugger;
+  //   let outlet_name = $(this).parent().parent().find(".input_class").val();
+  //   if (outlet_name == ""){
+  //     //outlet_name = '';
+  //     alert("Please insert a name and then save!");
+  //     return;
+  //   }
+  //   $(this).parent().parent().find(".input_class").hide();
+  //   $(this).parent().parent().find(".name").text(outlet_name);
+  //   $(this).parent().parent().find(".name").show();
+  //   $(this).parent().hide();
+  //   $(this).parent().parent().append(edit_button);
+  // });
+
+  //outlets: cancel button
+  // $('#cancel_out').click( function() {
+  //   //debugger;
+  //   let outlet_name="";
+  //   //if there was a input, change to the old input
+  //   let name = $(this).parent().parent().find(".name").text();
+  //   //alert(name);
+  //   if (name) {
+  //     $(this).parent().parent().find(".name").show();
+  //     $(this).parent().parent().find(".input_class").val(name);
+  //
+  //     $(this).parent().parent().find(".input_class").hide();
+  //     $(this).parent().hide();
+  //     $(this).parent().parent().append(edit_button);
+  //   }
+  //   // if there wasn't an input, alert the user to input a name
+  //   // else {
+  //   //   outlet_name = '';
+  //   //   //does not allow the user cancel without saving once
+  //   //   alert("Please insert a name!");
+  //   //   return;
+  //   // }
+  //   $(this).parent().parent().find(".input_class").hide();
+  //   $(this).parent().hide();
+  //   $(this).parent().parent().hide(edit_button);
+  //
+  // });
 
 });
 
