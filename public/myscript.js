@@ -137,7 +137,7 @@ $(document).on('click', '#save', function() {
 });
 
 //variables: edit button
-$('#edit').click(function()) {
+$(document).on('click', '#edit', function() {
   //record all the texts values from static mode
   let var_name = $(this).parent().parent().find(".var_name_text").text();
   let var_type = $(this).parent().parent().find(".var_type_text").text();
@@ -272,12 +272,12 @@ function resizeInput() {
 }
 
 //alphanumeric algorithm
-function checkAlphaNumeric(var_name.value) {
-   var input = var_name.value;
-   var numeric = /^([a-zA-Z0-9_]+)$/;
-   if (!numeric.test(input)) {
-     document.getElementById('errorText').style.display = '';
-   } else {
-     document.getElementById('errorText').style.display = 'none';
-  }
- }
+// function checkAlphaNumeric(var_name.value) {
+//   var input = var_name.value;
+//   var numeric = /^([a-zA-Z0-9_]+)$/;
+//   if (!numeric.test(input)) {
+//     document.getElementById('errorText').style.display = '';
+//   } else {
+//     document.getElementById('errorText').style.display = 'none';
+//   }
+// }
