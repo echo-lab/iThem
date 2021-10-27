@@ -10,7 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "express-session": "^1.17.2",
     "mongodb": "^3.6.9",
-    "mongoose": "^5.12.13"
+    "mongoose": "^5.12.13",
+    "passport": "^0.5.0",
+    "passport-google-oauth2": "^0.2.0"
   }
 }
