@@ -4,6 +4,7 @@ var bodyParser   = require('body-parser');
 var passport = require("passport");
 const session = require("express-session");
 require('./auth');
+//var User = require('./user');
 let app = express();
 let dbo = null;
 let VERBOSE = true;
@@ -32,12 +33,12 @@ app.use('/js', express.static(__dirname + '/public/js'));
 app.use('/images', express.static(__dirname + '/public/images'));
 
 let MongoClient = require('mongodb').MongoClient;
-let url = "mongodb://localhost:27017/iThem";
+let url = "mongodb://localhost:27017/ithem";
 
 MongoClient.connect(url, { useUnifiedTopology: true }, function(err, db) {
   if (err) throw err;
 
-  dbo = db.db("iThem");
+  dbo = db.db("ithem");
   if(VERBOSE)console.log("Database created!");
 
   // work out debugging
@@ -85,7 +86,7 @@ app.get('/', function(req, res) {
 });
 
 //outlet endpoints
-app.get('/addoutlet/:outletName/:description', function (req, res) {
+app.get('/addoutlet/:outletName/:description', isLoggedIn, function (req, res) {
   console.log("test addoutlet");
   let outlet = req.body;
 
@@ -111,7 +112,7 @@ app.get('/addoutlet/:outletName/:description', function (req, res) {
       return;
     } else {
       // outlet.userID = ,
-      // outlet.username = ,
+      outlet.useremail = req.user.email,
       outlet.outletName = req.params.outletName,
       outlet.description= req.params.description,
       outlet.createdAt = new Date(),
@@ -124,7 +125,7 @@ app.get('/addoutlet/:outletName/:description', function (req, res) {
   });
 });
 
-app.get('/fetchoutlet', function (req, res) {
+app.get('/fetchoutlet', isLoggedIn, function (req, res) {
   console.log("test fetchoutlet");
 
   dbo.collection("outlets").count(function(err, count) {
@@ -138,7 +139,7 @@ app.get('/fetchoutlet', function (req, res) {
   });
 });
 
-app.get('/findoutletbyname/:outletName', function (req, res) {
+app.get('/findoutletbyname/:outletName', isLoggedIn, function (req, res) {
   console.log("test fetchoutlet");
 
   if(!req.params.outletName) {
@@ -170,7 +171,7 @@ app.get('/findoutletbyname/:outletName', function (req, res) {
 
 });
 
-app.get('/updateoutlet/:outletName/:newOutletName', function (req, res) {
+app.get('/updateoutlet/:outletName/:newOutletName', isLoggedIn, function (req, res) {
   console.log("test updateoutlet");
 
   if(!req.params.outletName) {
@@ -231,7 +232,7 @@ app.get('/updateoutlet/:outletName/:newOutletName', function (req, res) {
 
 });
 
-app.get('/removeoutlet/:outletName', function (req, res) {
+app.get('/removeoutlet/:outletName', isLoggedIn, function (req, res) {
   console.log("test removeoutlet");
   if(!req.params.outletName) {
     writeBadRequestResponse(res, "removeoutlet: Outlet name not defined");
@@ -294,7 +295,7 @@ app.get("/auth/failure", (req, res) => {
 app.get("/logout", (req, res) => {
   req.logout();
   req.session.destroy();
-  res.send('You have logged out');
+  res.redirect('/');
 });
 
 
