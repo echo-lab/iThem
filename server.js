@@ -105,7 +105,7 @@ app.get('/addoutlet/:outletName/:description', isLoggedIn, function (req, res) {
     return;
   }
 
-  let result = dbo.collection("outlets").find( {outletName: req.params.outletName} ).count().then(function(result) {
+  let result = dbo.collection("outlets").find( {useremail : req.user.email, outletName: req.params.outletName} ).count().then(function(result) {
     console.log(result);
     if (result > 0) {
       writeBadRequestResponse(res, "addoutlet: Outlet name already exists");
@@ -132,7 +132,7 @@ app.get('/fetchoutlet', isLoggedIn, function (req, res) {
     if (count == 0) {
       writeOKResponse(res, "fetchoutlet: Fetched Successfully", "Collection is empty");
     } else {
-      dbo.collection("outlets").find( {} ).toArray().then((ans) => {
+      dbo.collection("outlets").find( {useremail : req.user.email} ).toArray().then((ans) => {
         writeOKResponse(res, "fetchoutlet: Fetched Successfully", ans);
       });
     }
@@ -153,7 +153,7 @@ app.get('/findoutletbyname/:outletName', isLoggedIn, function (req, res) {
   }
 
   let result = null;
-  dbo.collection("outlets").findOne( {outletName: req.params.outletName}, function(err, item) {
+  dbo.collection("outlets").findOne( {useremail : req.user.email, outletName: req.params.outletName}, function(err, item) {
     if (!err) {
       result = item;
       if (typeof result === 'undefined') {
@@ -192,7 +192,7 @@ app.get('/updateoutlet/:outletName/:newOutletName', isLoggedIn, function (req, r
   }
 
   let result = null;
-  dbo.collection("outlets").findOne( {outletName: req.params.outletName}, function(err, item) {
+  dbo.collection("outlets").findOne( {useremail : req.user.email, outletName: req.params.outletName}, function(err, item) {
     if (!err) {
       result = item;
       if (typeof result === 'undefined') {
@@ -203,7 +203,7 @@ app.get('/updateoutlet/:outletName/:newOutletName', isLoggedIn, function (req, r
         if (!err) {
           console.log("1 document updated");
           let updatedResult = null;
-          dbo.collection("outlets").findOne( {outletName: req.params.newOutletName}, function(err, item) {
+          dbo.collection("outlets").findOne( {useremail : req.user.email, outletName: req.params.newOutletName}, function(err, item) {
             if (!err) {
               updatedResult = item;
               if (typeof updatedResult === 'undefined') {
@@ -245,7 +245,7 @@ app.get('/removeoutlet/:outletName', isLoggedIn, function (req, res) {
   }
   // get named outlet from collection
   let result = null;
-  dbo.collection("outlets").findOne( {outletName: req.params.outletName}, function(err, item) {
+  dbo.collection("outlets").findOne( {useremail : req.user.email, outletName: req.params.outletName}, function(err, item) {
     if (!err) {
       result = item;
       if (typeof result === 'undefined') {
@@ -253,7 +253,7 @@ app.get('/removeoutlet/:outletName', isLoggedIn, function (req, res) {
         return;
       } else {
         console.log(result);
-        var query = {outletName: req.params.outletName};
+        var query = {useremail : req.user.email, outletName: req.params.outletName};
         dbo.collection("outlets").deleteOne(query, function(err, obj) {
           if (err) throw err;
           writeOKResponse(res, "removeoutlet: Outlet Removed Successfully", result);
