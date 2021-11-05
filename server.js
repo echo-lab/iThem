@@ -41,7 +41,6 @@ MongoClient.connect(url, { useUnifiedTopology: true }, function(err, db) {
   dbo = db.db("ithem");
   if(VERBOSE)console.log("Database created!");
 
-  // work out debugging
   // of outlets collection does not exist create it
   dbo.listCollections({name: "outlets"}).next(function(err, collinfo) {
     if (collinfo) {
@@ -50,6 +49,18 @@ MongoClient.connect(url, { useUnifiedTopology: true }, function(err, db) {
       dbo.createCollection("outlets", function(err, res) {
         if (err) throw err;
         if(VERBOSE)console.log("Collection outlets created!");
+      });
+    }
+  })
+
+  // of inlets collection does not exist create it
+  dbo.listCollections({name: "inlets"}).next(function(err, collinfo) {
+    if (collinfo) {
+      console.log("Collection inlets exists");
+    } else {
+      dbo.createCollection("inlets", function(err, res) {
+        if (err) throw err;
+        if(VERBOSE)console.log("Collection inlets created!");
       });
     }
   })
@@ -112,7 +123,7 @@ app.get('/addoutlet/:outletName/:description', isLoggedIn, function (req, res) {
       return;
     } else {
       // outlet.userID = ,
-      outlet.useremail = req.user.email,
+      outlet.useremail = req.user.email, // used as userID
       outlet.outletName = req.params.outletName,
       outlet.description= req.params.description,
       outlet.createdAt = new Date(),
@@ -248,7 +259,7 @@ app.get('/removeoutlet/:outletName', isLoggedIn, function (req, res) {
   dbo.collection("outlets").findOne( {useremail : req.user.email, outletName: req.params.outletName}, function(err, item) {
     if (!err) {
       result = item;
-      if (typeof result === 'undefined') {
+      if (typeof result === 'undefined' || result === null) {
         writeBadRequestResponse(res, "removeoutlet: Outlet does not exist");
         return;
       } else {
@@ -257,6 +268,157 @@ app.get('/removeoutlet/:outletName', isLoggedIn, function (req, res) {
         dbo.collection("outlets").deleteOne(query, function(err, obj) {
           if (err) throw err;
           writeOKResponse(res, "removeoutlet: Outlet Removed Successfully", result);
+        })
+      }
+
+    } else {
+      result = "error";
+    }
+  });
+
+
+});
+
+//inlet endpoints
+app.get('/addinlet/:inletName/:description', isLoggedIn, function (req, res) {
+  console.log("test addinlet");
+  let inlet = req.body;
+
+  if(!req.params.inletName) {
+    writeBadRequestResponse(res, "addoutlet: Outlet name not defined");
+    return;
+  }
+
+  if(typeof(req.params.inletName) != "string") {
+    writeBadRequestResponse(res, "addoutlet: Outlet name must be string");
+    return;
+  }
+
+  if(!req.params.description) {
+    writeBadRequestResponse(res, "addoutlet: Description not defined");
+    return;
+  }
+
+  let result = dbo.collection("outlets").find( {useremail : req.user.email, inletName: req.params.inletName} ).count().then(function(result) {
+    console.log(result);
+    if (result > 0) {
+      writeBadRequestResponse(res, "addoutlet: Outlet name already exists");
+      return;
+    } else {
+      // outlet.userID = ,
+      inlet.useremail = req.user.email, // used as userID
+      inlet.inletName = req.params.inletName,
+      inlet.description= req.params.description,
+      inlet.createdAt = new Date(),
+      inlet.updatedAt = new Date();
+
+      insertDocument(dbo, "inlets", inlet, function(data){
+        writeOKResponse(res, "addinlet: Added Successfully", inlet);
+      });
+    }
+  });
+});
+
+app.get('/fetchinlet', isLoggedIn, function (req, res) {
+  console.log("test fetchinlet");
+
+  dbo.collection("inlets").count(function(err, count) {
+    if (count == 0) {
+      writeOKResponse(res, "fetchinlet: Fetched Successfully", "Collection is empty");
+    } else {
+      dbo.collection("inlets").find( {useremail : req.user.email} ).toArray().then((ans) => {
+        writeOKResponse(res, "fetcinlet: Fetched Successfully", ans);
+      });
+    }
+  });
+});
+
+app.get('/updateinlet/:inletName/:newInletName', isLoggedIn, function (req, res) {
+  console.log("test updateinlet");
+
+  if(!req.params.inletName) {
+    writeBadRequestResponse(res, "updateInlet: Existing Inlet name not defined");
+    return;
+  }
+  if(typeof(req.params.inletName) != "string") {
+    writeBadRequestResponse(res, "updateInlet: Existing Inlet name must be string");
+    return;
+  }
+  if(!req.params.newInletName) {
+    writeBadRequestResponse(res, "updateInlet: New Inlet name not defined");
+    return;
+  }
+  if(typeof(req.params.newInletName) != "string") {
+    writeBadRequestResponse(res, "updateInlet: New Inlet name must be string");
+    return;
+  }
+
+  let result = null;
+  dbo.collection("inlets").findOne( {useremail : req.user.email, inletName: req.params.inletName}, function(err, item) {
+    if (!err) {
+      result = item;
+      if (typeof result === 'undefined') {
+        writeBadRequestResponse(res, "updateInlet: Existing Inlet not found");
+        return;
+      }
+      dbo.collection("inlets").update( {'inletName': req.params.inletName}, {$set:{'inletName':req.params.newInletName, 'updatedAt': new Date()}}, function(err, item) {
+        if (!err) {
+          console.log("1 document updated");
+          let updatedResult = null;
+          dbo.collection("inlets").findOne( {useremail : req.user.email, inletName: req.params.newInletName}, function(err, item) {
+            if (!err) {
+              updatedResult = item;
+              if (typeof updatedResult === 'undefined') {
+                writeBadRequestResponse(res, "updateInlet: Updated Inlet not found");
+                return;
+              } else {
+                console.log(updatedResult);
+                writeOKResponse(res, "updateInlet: Updated Successfully", updatedResult);
+              }
+
+            } else {
+              result = "error";
+              console.log(result + " found");
+            }
+          });
+        } else {
+          result = "error";
+          throw err;
+        }
+      });
+    } else {
+      result = "error";
+      throw err;
+    }
+  });
+
+});
+
+app.get('/removeinlet/:inletName', isLoggedIn, function (req, res) {
+  console.log("test removeinlet");
+  if(!req.params.inletName) {
+    writeBadRequestResponse(res, "removeinlet: Inlet name not defined");
+    return;
+  }
+
+  if(typeof(req.params.inletName) != "string") {
+    writeBadRequestResponse(res, "removeinlet: Inlet name must be string");
+    return;
+  }
+  // get named outlet from collection
+  let result = null;
+  dbo.collection("inlets").findOne( {useremail : req.user.email, inletName: req.params.inletName}, function(err, item) {
+    if (!err) {
+      result = item;
+      if (typeof result === 'undefined' || result === null) {
+        writeBadRequestResponse(res, "removeinlet: Inlet does not exist");
+        return;
+      } else {
+        console.log(result);
+        var query = {useremail : req.user.email, inletName: req.params.inletName};
+        dbo.collection("inlets").deleteOne(query, function(err, obj) {
+          if (err) throw err;
+          writeOKResponse(res, "removeinlet: Inlet Removed Successfully", result);
         })
       }
 
