@@ -139,7 +139,7 @@ app.get('/addoutlet/:outletName/:description', isLoggedIn, function (req, res) {
 app.get('/fetchoutlet', isLoggedIn, function (req, res) {
   console.log("test fetchoutlet");
 
-  dbo.collection("outlets").count(function(err, count) {
+  dbo.collection("outlets").countDocuments(function(err, count) {
     if (count == 0) {
       writeOKResponse(res, "fetchoutlet: Fetched Successfully", "Collection is empty");
     } else {
@@ -322,7 +322,7 @@ app.get('/addinlet/:inletName/:description', isLoggedIn, function (req, res) {
 app.get('/fetchinlet', isLoggedIn, function (req, res) {
   console.log("test fetchinlet");
 
-  dbo.collection("inlets").count(function(err, count) {
+  dbo.collection("inlets").countDocuments(function(err, count) {
     if (count == 0) {
       writeOKResponse(res, "fetchinlet: Fetched Successfully", "Collection is empty");
     } else {
