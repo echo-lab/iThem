@@ -210,7 +210,7 @@ app.get('/updateoutlet/:outletName/:newOutletName', isLoggedIn, function (req, r
         writeBadRequestResponse(res, "updateOutlet: Existing outlet not found");
         return;
       }
-      dbo.collection("outlets").update( {'outletName': req.params.outletName}, {$set:{'outletName':req.params.newOutletName, 'updatedAt': new Date()}}, function(err, item) {
+      dbo.collection("outlets").updateOne( {'useremail' : req.user.email, 'outletName': req.params.outletName}, {$set:{'outletName':req.params.newOutletName, 'updatedAt': new Date()}}, function(err, item) {
         if (!err) {
           console.log("1 document updated");
           let updatedResult = null;
@@ -285,24 +285,24 @@ app.get('/addinlet/:inletName/:description', isLoggedIn, function (req, res) {
   let inlet = req.body;
 
   if(!req.params.inletName) {
-    writeBadRequestResponse(res, "addoutlet: Outlet name not defined");
+    writeBadRequestResponse(res, "addinlet: Inlet name not defined");
     return;
   }
 
   if(typeof(req.params.inletName) != "string") {
-    writeBadRequestResponse(res, "addoutlet: Outlet name must be string");
+    writeBadRequestResponse(res, "addinlet: Inlet name must be string");
     return;
   }
 
   if(!req.params.description) {
-    writeBadRequestResponse(res, "addoutlet: Description not defined");
+    writeBadRequestResponse(res, "addinlet: Description not defined");
     return;
   }
 
-  let result = dbo.collection("outlets").find( {useremail : req.user.email, inletName: req.params.inletName} ).count().then(function(result) {
+  let result = dbo.collection("inlets").find( {useremail : req.user.email, inletName: req.params.inletName} ).count().then(function(result) {
     console.log(result);
     if (result > 0) {
-      writeBadRequestResponse(res, "addoutlet: Outlet name already exists");
+      writeBadRequestResponse(res, "addinlet: Inlet name already exists");
       return;
     } else {
       // outlet.userID = ,
@@ -327,7 +327,7 @@ app.get('/fetchinlet', isLoggedIn, function (req, res) {
       writeOKResponse(res, "fetchinlet: Fetched Successfully", "Collection is empty");
     } else {
       dbo.collection("inlets").find( {useremail : req.user.email} ).toArray().then((ans) => {
-        writeOKResponse(res, "fetcinlet: Fetched Successfully", ans);
+        writeOKResponse(res, "fetchinlet: Fetched Successfully", ans);
       });
     }
   });
@@ -361,7 +361,7 @@ app.get('/updateinlet/:inletName/:newInletName', isLoggedIn, function (req, res)
         writeBadRequestResponse(res, "updateInlet: Existing Inlet not found");
         return;
       }
-      dbo.collection("inlets").update( {'inletName': req.params.inletName}, {$set:{'inletName':req.params.newInletName, 'updatedAt': new Date()}}, function(err, item) {
+      dbo.collection("inlets").updateOne( {'useremail' : req.user.email, 'inletName': req.params.inletName}, {$set:{'inletName':req.params.newInletName, 'updatedAt': new Date()}}, function(err, item) {
         if (!err) {
           console.log("1 document updated");
           let updatedResult = null;
