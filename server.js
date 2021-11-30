@@ -79,6 +79,18 @@ let writeOKResponse = function(res, message, data){
   res.end(JSON.stringify(obj));
 }
 
+let writeOKEmptyResponse = function(res, message, data){
+  let obj = {
+    status: "OK",
+    message: message,
+    data: data
+  };
+  if(VERBOSE)console.log("writeOKEmptyResponse:" + message);
+
+  res.writeHead(204, {'Content-type': 'application/json'});
+  res.end(JSON.stringify(obj));
+}
+
 let writeBadRequestResponse = function(res, message){
   if(VERBOSE)console.log("writeBadRequestResponse:" + message);
   res.writeHead(400, {'Content-type': 'text/plain'});
@@ -94,6 +106,14 @@ let insertDocument = function(db, collectionName, data, callback) {
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(absolutePath + '/../public/index.html'));
+});
+
+app.get('/home', isLoggedIn, function(req, res) {
+    res.sendFile(path.join(absolutePath + '/../public/ithem.html'));
+});
+
+app.get('/about', function(req, res) {
+    res.send("IThem is a service to combine one to one, many to one, one to many, and many to many trigger action pairs");
 });
 
 //outlet endpoints
@@ -141,7 +161,7 @@ app.get('/fetchoutlet', isLoggedIn, function (req, res) {
 
   dbo.collection("outlets").countDocuments(function(err, count) {
     if (count == 0) {
-      writeOKResponse(res, "fetchoutlet: Fetched Successfully", "Collection is empty");
+      writeOKEmptyResponse(res, "fetchoutlet: Fetched Successfully", "Collection is empty");
     } else {
       dbo.collection("outlets").find( {useremail : req.user.email} ).toArray().then((ans) => {
         writeOKResponse(res, "fetchoutlet: Fetched Successfully", ans);
@@ -168,7 +188,7 @@ app.get('/findoutletbyname/:outletName', isLoggedIn, function (req, res) {
     if (!err) {
       result = item;
       if (typeof result === 'undefined') {
-        writeOKResponse(res, "fetchoutlet: Fetched Successfully, nothing to fetch", result);
+        writeOKEmptyResponse(res, "fetchoutlet: Fetched Successfully, nothing to fetch", result);
       } else {
         console.log(result);
         writeOKResponse(res, "fetchoutlet: Fetched Successfully", result);
@@ -324,7 +344,7 @@ app.get('/fetchinlet', isLoggedIn, function (req, res) {
 
   dbo.collection("inlets").countDocuments(function(err, count) {
     if (count == 0) {
-      writeOKResponse(res, "fetchinlet: Fetched Successfully", "Collection is empty");
+      writeOKEmptyResponse(res, "fetchinlet: Fetched Successfully", "Collection is empty");
     } else {
       dbo.collection("inlets").find( {useremail : req.user.email} ).toArray().then((ans) => {
         writeOKResponse(res, "fetchinlet: Fetched Successfully", ans);
@@ -459,6 +479,187 @@ app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect('/');
 });
+
+app.get('/oauth2/authorize', (req, res) => {
+  console.log("api auth");
+  res.send("Grant IFTTT access");
+});
+
+app.get('/oauth2/token', (req, res) => {
+  console.log("get token");
+});
+
+// API endpoints
+app.get('/ifttt/v1/status', (req, res) => {
+ console.log("Status check!")
+ if (req.headers['IFTTT-Service-Key'] == 'iuLesxDNlW33TMnaeS3BWg3ipN2suKMSEj5bhTkl1n3ZdcfuDx3eHdQsG4JPBspb') {
+  res.sendStatus(200)
+ }
+ else {
+  res.sendStatus(401)
+ }
+})
+
+app.post('/ifttt/v1/test/setup', (req, res) => {
+ console.log("Test Setup check!")
+
+ if (req.headers['IFTTT-Service-Key'] == 'iuLesxDNlW33TMnaeS3BWg3ipN2suKMSEj5bhTkl1n3ZdcfuDx3eHdQsG4JPBspb') {
+  res.status(200).send({
+     "data": {
+     }
+  })
+}
+
+ else {
+  res.sendStatus(401)
+ }
+})
+
+app.post('/ifttt/v1/triggers/new_inlet', (req, res) => {
+ console.log("Trigger Check")
+
+if(req.body.limit == '1') {
+  res.status(200).send({
+     "data": [
+      {
+      "image_url": "http://example.com/images/125",
+      "tags": "banksy, nyc",
+      "posted_at": "2013-11-04T03:23:00-07:00"
+      }
+    ]
+  })
+
+}
+
+else if(req.body.limit == '0') {
+  res.status(200).send({
+     "data": [
+    ]
+  })
+
+}
+
+else if (req.headers['IFTTT-Service-Key'] == 'iuLesxDNlW33TMnaeS3BWg3ipN2suKMSEj5bhTkl1n3ZdcfuDx3eHdQsG4JPBspb') {
+  res.status(200).send({
+     "data": [
+    {
+      "image_url": "http://example.com/images/128",
+      "tags": "banksy, brooklyn",
+      "posted_at": "2013-11-04T09:23:00-07:00",
+      "created_at": "2013-11-04T09:23:00-07:00",
+      "meta": {
+        "id": "14b9-1fd2-acaa-5df5",
+        "timestamp": 1383597267
+      }
+    },
+    {
+      "image_url": "http://example.com/images/125",
+      "tags": "banksy, nyc",
+      "posted_at": "2013-11-04T03:23:00-07:00",
+      "created_at": "2013-11-04T09:23:00-07:00",
+      "meta": {
+        "id": "ffb27-a63e-18e0-18ad",
+        "timestamp": 1383596355
+      }
+    },
+    {
+      "image_url": "http://example.com/images/125",
+      "tags": "banksy, nyc",
+      "posted_at": "2013-11-04T03:23:00-07:00",
+      "created_at": "2013-11-04T09:23:00-07:00",
+      "meta": {
+        "id": "f27-a63e-18w0-185d",
+        "timestamp": 1383596355
+      }
+    }
+  ]
+  })
+
+
+}
+
+  else {
+  res.status(401).send({
+     "errors": [
+       {
+         "message": "Something went wrong!"
+       }
+      ]
+  })
+  }
+})
+
+
+app.post('/ifttt/v1/queries/list_all_inlets', (req, res) => {
+ console.log("Queries check")
+
+if(req.body.limit == '1') {
+  res.status(200).send({
+     "data": [
+      {
+      "image_url": "http://example.com/images/125",
+      "tags": "banksy, nyc",
+      "posted_at": "2013-11-04T03:23:00-07:00"
+      }
+    ],
+    "cursor": "seijjh24ks"
+  })
+
+}
+
+
+else if (req.headers['IFTTT-Service-Key'] == 'iuLesxDNlW33TMnaeS3BWg3ipN2suKMSEj5bhTkl1n3ZdcfuDx3eHdQsG4JPBspb') {
+  res.status(200).send({
+     "data": [
+      {
+      "image_url": "http://example.com/images/125",
+      "tags": "banksy, nyc",
+      "posted_at": "2013-11-04T03:23:00-07:00"
+      },
+      {
+      "image_url": "http://example.com/images/125",
+      "tags": "banksy, nyc",
+      "posted_at": "2013-11-04T03:23:00-07:00"
+      }
+    ]
+  })
+}
+
+ else {
+   res.status(401).send({
+     "errors": [
+       {
+         "message": "Something went wrong!"
+       }
+      ]
+  })
+  }
+})
+
+app.post('/ifttt/v1/actions/new_outlet', (req, res) => {
+ console.log("Actions check")
+
+ if (req.headers['IFTTT-Service-Key'] == 'iuLesxDNlW33TMnaeS3BWg3ipN2suKMSEj5bhTkl1n3ZdcfuDx3eHdQsG4JPBspb') {
+  res.status(200).send({
+     "data": [
+      {
+      "url": "http://example.com/images/125",
+      "id": "xxxx"
+      },
+    ]
+  })
+}
+
+   else {
+  res.status(401).send({
+     "errors": [
+       {
+         "message": "Something went wrong!"
+       }
+      ]
+  })
+ }
+})
 
 
 let server = app.listen(8081, function(){
