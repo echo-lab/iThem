@@ -3,6 +3,7 @@ var express = require("express");
 var bodyParser   = require('body-parser');
 var passport = require("passport");
 const session = require("express-session");
+const path = require('path');
 require('./auth');
 //var User = require('./user');
 let app = express();
@@ -15,7 +16,6 @@ function isLoggedIn(req, res, next) {
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
-app.use(express.static('public'));
 
 // required for passport
 app.use(session({ secret: 'somethingsecret' }));
@@ -28,6 +28,7 @@ var absolutePath = __dirname
 console.log(absolutePath);
 
 //make way for some custom css, js and images
+app.use(express.static(__dirname + '/public'));
 app.use('/css', express.static(__dirname + '/public/css'));
 app.use('/js', express.static(__dirname + '/public/js'));
 app.use('/images', express.static(__dirname + '/public/images'));
@@ -105,11 +106,11 @@ let insertDocument = function(db, collectionName, data, callback) {
 };
 
 app.get('/', function(req, res) {
-    res.sendFile(path.join(absolutePath + '/../public/index.html'));
+    res.sendFile(path.join(absolutePath + '/../iThem/public/index.html'));
 });
 
-app.get('/home', isLoggedIn, function(req, res) {
-    res.sendFile(path.join(absolutePath + '/../public/ithem.html'));
+app.get('/main', isLoggedIn, function(req, res) {
+    res.sendFile(path.join(absolutePath + '/../iThem/public/ithem.html'));
 });
 
 app.get('/about', function(req, res) {
