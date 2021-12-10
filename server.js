@@ -459,7 +459,7 @@ app.get("/auth/google",
 // Declare the redirect routes as authenticated and failure
 app.get("/google/callback",
   passport.authenticate('google', {
-    successRedirect: '/authenticated',
+    successRedirect: '/main',
     failureRedirect: '/auth/failure',
  })
 );
