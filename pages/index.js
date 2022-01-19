@@ -7,7 +7,7 @@ import {
 import styles from "../styles/Home.module.css";
 const { SubMenu } = Menu;
 const { Title } = Typography;
-
+import Controller from "../lib/controller"
 const { Header, Content, Sider } = Layout;
 import "antd/dist/antd.css";
 
@@ -21,6 +21,7 @@ export default function Home() {
           <Col align="middle" span={12}>
             <Title>iThem</Title>
             <p>GENERATING MORE STRUCTURED RULES</p>
+            <Controller></Controller>
           </Col>
           <Col span={6}></Col>
         </Row>
