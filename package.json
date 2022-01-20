@@ -9,8 +9,11 @@
   },
   "dependencies": {
     "antd": "^4.18.4",
+    "fs": "^0.0.1-security",
+    "mongodb": "^4.3.1",
     "next": "12.0.8",
     "next-auth": "^4.1.2",
+    "path": "^0.12.7",
     "react": "17.0.2",
     "react-dom": "17.0.2"
   },
