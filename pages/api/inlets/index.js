@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         // fetch the posts
         let inlets = await db
           .collection("inlets")
-          .find({ useremail: req.user.email })
+          .find({ email: req.query.email })
           .sort({ published: -1 })
           .toArray();
         // return the posts
