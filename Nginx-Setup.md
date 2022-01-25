@@ -35,7 +35,7 @@ to set up the app involves:
     proxy_set_header Host $host;
     proxy_cache_bypass $http_upgrade;
     }
-    # Load configuration files for the default server block.
+     (Load configuration files for the default server block.)
     include /etc/nginx/default.d/*.conf;
     ...
     ``
