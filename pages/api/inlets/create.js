@@ -9,8 +9,10 @@ export default async function handler(req, res) {
     case "POST": {
       try {
         let inlets = await db.collection("inlets").insertOne({
+          label:req.query.name,
           email: req.query.email,
           name: req.query.name,
+          value: "TBD",
           description: req.query.description,
           createdAt: new Date(),
         });
