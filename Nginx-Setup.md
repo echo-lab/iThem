@@ -1,7 +1,5 @@
 # How to set up self-hosted server for nodejs/nextjs app
 
-## summary
-to set up the app involves:
 1. set up nginx and its reverse proxy
     reverse proxy allows requests to be redirected to your app at localhost
     for instance, in this project ithem.cs.vt.edu, we use nginx to redirect request to ithem.cs.vt.edu to localhost:3000.
@@ -19,7 +17,7 @@ to set up the app involves:
     My conf file looks like this:
     ``
     ...
-    server {
+    server { 
     if ($host = ithem.cs.vt.edu) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
@@ -35,7 +33,7 @@ to set up the app involves:
     proxy_set_header Host $host;
     proxy_cache_bypass $http_upgrade;
     }
-    # Load configuration files for the default server block.
+     (Load configuration files for the default server block.)
     include /etc/nginx/default.d/*.conf;
     ...
     ``
@@ -68,5 +66,8 @@ to set up the app involves:
 ## Resources:
 nginx documentation: http://nginx.org/en/docs/beginners_guide.html
 nginx conf file doc: http://nginx.org/en/docs/http/configuring_https_servers.html
-
 https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-in-ubuntu-16-04
+https://www.digitalocean.com/community/questions/how-to-run-node-js-server-with-nginx
+https://gist.github.com/soheilhy/8b94347ff8336d971ad0
+https://eladnava.com/binding-nodejs-port-80-using-nginx/
+https://stackoverflow.com/questions/24861311/forwarding-port-80-to-8080-using-nginx
