@@ -67,3 +67,7 @@
 nginx documentation: http://nginx.org/en/docs/beginners_guide.html
 nginx conf file doc: http://nginx.org/en/docs/http/configuring_https_servers.html
 https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-in-ubuntu-16-04
+https://www.digitalocean.com/community/questions/how-to-run-node-js-server-with-nginx
+https://gist.github.com/soheilhy/8b94347ff8336d971ad0
+https://eladnava.com/binding-nodejs-port-80-using-nginx/
+https://stackoverflow.com/questions/24861311/forwarding-port-80-to-8080-using-nginx
