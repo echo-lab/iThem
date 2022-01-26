@@ -3,7 +3,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { FirebaseAdapter } from "@next-auth/firebase-adapter"
 import GithubProvider from "next-auth/providers/github"
-
+import Auth0Provider from "next-auth/providers/auth0";
 // import firebase from "firebase/app"
 // import "firebase/firestore"
 
@@ -20,9 +20,21 @@ export default NextAuth({
       clientSecret: "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"
       // process.env.GOOGLE_CLIENT_SECRET,
     }),
+    Auth0Provider({
+      clientId: "4AODEw3JUoL2vGh2pYbDRgvb2erGSTDG",
+      clientSecret: "MTlcPpy4EoNc6PJkg6XgQryBF19mguzOzxWq64gaTBjXJLaADV4STLSyjW1Sg8D8",
+      issuer: "dev-ma20u47s.us.auth0.com"
+    })
   ],
   // adapter: FirebaseAdapter(firestore),
-  secret:"RBKUCw5QfrkasYmxqjbM6tzDa2JkGlLfaiXG6hLEefs="
+  secret:"RBKUCw5QfrkasYmxqjbM6tzDa2JkGlLfaiXG6hLEefs=",
+  callbacks: {
+    async session({ session, token, user }) {
+      // Send properties to the client, like an access_token from a provider.
+      session.accessToken = token.accessToken
+      return session
+    }
+  }
 });
 
 

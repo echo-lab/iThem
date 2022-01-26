@@ -11,7 +11,7 @@ export default async function handler(req, res) {
         // connect to the database
         // fetch the posts
         let variables = await db
-          .collection("variable")
+          .collection("variables")
           .find({ email: req.query.email })
           .sort({ published: -1 })
           .toArray();

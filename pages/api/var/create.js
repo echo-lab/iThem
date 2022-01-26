@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     //   http://localhost:3000/api/inlets/update?name=new name&id=61e983a630328ac2f0cca0a4
     case "POST": {
       try {
-        let inlets = await db.collection("variable").insertOne({
+        let inlets = await db.collection("variables").insertOne({
           email: req.query.email,
           name: req.query.name,
           type: req.query.type,
