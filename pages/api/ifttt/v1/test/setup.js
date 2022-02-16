@@ -6,32 +6,17 @@ export default async function handler(req, res) {
           if(req.headers['ifttt-service-key']=="iuLesxDNlW33TMnaeS3BWg3ipN2suKMSEj5bhTkl1n3ZdcfuDx3eHdQsG4JPBspb")
           res.status(200).json({
             "data": {
-              "accessToken": "ya29.A0ARrdaM9-p4u8uvjuhro3AC7bbHPyDfuFkBtNeQtdJpSgN2jv0JV0WUMyAYUYyZQP2EUKAvyPdM7iCz3FEVBzoLKjPihukefutnti1y4QFt2gtWpSvxU_z5WfCSy-jS2Siytk9yZks7p_jByTdFStu-q752oZCvoSQb1r",
+              "accessToken": "ya29.A0ARrdaM8Jw9N_k-HpbQ5whViN0xyh52wiznck8s5qnJcjnIxFtLIcij2tzZ-6Mj3iG3GPw_PSoHLGLe35ieVva9nq1oEZzObMITIkA_0Njwq2OIF3J92csHLforQjr66C1ZVDE3tsLz7neN2eEoswlh2a1x_lOXYJ2cSv",
               "samples": {
                 "triggers": {
-                  "any_new_photo_in_category": {
-                    "category": "Nature"
+                  "outlet_handler": {
+                    "name": "TweetMoreThanTen"
                   },
-                  "any_new_photo_in_album": {
-                    "album": "Italy"
-                  }
-                },
-                "triggerFieldValidations": {
-                  "any_new_photo_in_album": {
-                    "album": {
-                      "valid": "Italy",
-                      "invalid": "AlbumDoesNotExist"
-                    }
-                  }
                 },
                 "actions": {
-                  "post_a_photo": {
-                    "album": "Sports",
-                    "url": "http://example.com/foo/jpg",
-                    "description": "AT&T Park"
-                  },
                   "trigger_a_inlet":{
-                    "inlet":"1"
+                    "inlet":"1",
+                    "data":"test"
                   }
                 },
                 "actionRecordSkipping": {

@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     //   http://localhost:3000/api/inlets/update?name=new name&id=61e983a630328ac2f0cca0a4
     case "POST": {
       try {
-        let inlets = await db.collection("inlets").insertOne({
+        let outlets = await db.collection("outlets").insertOne({
           label:req.query.name,
           email: req.query.email,
           name: req.query.name,
@@ -17,7 +17,7 @@ export default async function handler(req, res) {
           createdAt: new Date(),
         });
         return res.json({
-          message: JSON.parse(JSON.stringify(inlets)),
+          message: JSON.parse(JSON.stringify(outlets)),
           success: true,
         });
       } catch (error) {
