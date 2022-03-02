@@ -1,5 +1,9 @@
 // const { connectToDatabase } = require("../../../lib/mongodb");
 // const ObjectId = require("mongodb").ObjectId;
+
+import { fetchUser } from "../../../../../../lib/googleadapter"
+const { connectToDatabase } = require("../../../../../../lib/mongodb");
+
 export default async function handler(req, res) {
     // switch the methods
   //   const { db } = await connectToDatabase();
@@ -8,17 +12,18 @@ export default async function handler(req, res) {
       case "POST": {
         try {
           //   console.log(req.data)
-          // let inlets = await db.collection("inlets").insertOne({
-          //   label:req.query.name,
-          //   email: req.query.email,
-          //   name: req.query.name,
-          //   value: req.query.name,
-          //   description: req.query.description,
-          //   createdAt: new Date(),
-          // });
+          const responseJson = await fetchUser(req)
+          let { db } = await connectToDatabase();
+          console.log(responseJson.email);
+
+          let outlets = await db
+          .collection("events")
+          .find({$and: [{ email: responseJson.email }, {name: req.body.triggerFields.name}]})
+          .sort({ created_at: -1 })
+          .toArray();
+
           return res.status(200).json({
-  
-          //   message: JSON.parse(JSON.stringify(inlets)),
+            data: JSON.parse(JSON.stringify(outlets)),
             success: true,
           });
         } catch (error) {

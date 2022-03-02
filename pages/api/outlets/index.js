@@ -13,7 +13,7 @@ export default async function handler(req, res) {
         let outlets = await db
           .collection("outlets")
           .find({ email: req.query.email })
-          .sort({ published: -1 })
+          // .sort({ created_at: -1 })
           .toArray();
         // return the posts
         return res.json({

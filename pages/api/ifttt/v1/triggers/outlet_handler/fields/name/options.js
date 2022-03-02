@@ -9,7 +9,7 @@ export default async function handler(req, res) {
       case "POST": {
 
           const responseJson = await fetchUser(req)
-          console.log(responseJson)
+          // console.log(responseJson)
 
           if(responseJson.error)
           res.status(401).json({errors:[responseJson.error]})

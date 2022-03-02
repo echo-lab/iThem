@@ -13,6 +13,7 @@ export default async function handler(req, res) {
           email: req.query.email,
           name: req.query.name,
           value: req.query.name,
+          state: req.query.state,
           description: req.query.description,
           createdAt: new Date(),
         });

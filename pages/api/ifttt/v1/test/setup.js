@@ -6,11 +6,11 @@ export default async function handler(req, res) {
           if(req.headers['ifttt-service-key']=="iuLesxDNlW33TMnaeS3BWg3ipN2suKMSEj5bhTkl1n3ZdcfuDx3eHdQsG4JPBspb")
           res.status(200).json({
             "data": {
-              "accessToken": "ya29.A0ARrdaM8Jw9N_k-HpbQ5whViN0xyh52wiznck8s5qnJcjnIxFtLIcij2tzZ-6Mj3iG3GPw_PSoHLGLe35ieVva9nq1oEZzObMITIkA_0Njwq2OIF3J92csHLforQjr66C1ZVDE3tsLz7neN2eEoswlh2a1x_lOXYJ2cSv",
+              "accessToken": "ya29.A0ARrdaM9gxH97_GO0YelM5lq84ER611bA0JGvE-CWusCJ9U9Y_cpcRVfy8rDwuRiEeChGZZbwu81GJkaLAx5b0Wr8P_1PHXYORs-TjpJsAHb7tLwWW6rGuJXXJY3HqRVwGtEIj4fSstzKzccs0uP61946UzZaZ-uQVj4",
               "samples": {
                 "triggers": {
                   "outlet_handler": {
-                    "name": "TweetMoreThanTen"
+                    "name": "outlet4"
                   },
                 },
                 "actions": {

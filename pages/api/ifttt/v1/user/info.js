@@ -3,15 +3,10 @@ export default async function handler(req, res) {
     // switch the methods    
     switch (req.method) {
       case "GET": {
-
-        // const response = await fetch(
-        //     `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${req.headers['authorization'].substring(7)}`,
-        //   )
-        // const responseJson = await response.json();
-        // console.log(responseJson)
         const responseJson = await fetchUser(req)
-        res.status(200).json({data: {...responseJson, name:"Empty"}})
-  
+        if('error' in responseJson)
+          res.status(responseJson.error.code).json({errors:[responseJson.error]})
+        else res.status(200).json({data: {...responseJson, name:"Empty"}})
       }
     }
   }
