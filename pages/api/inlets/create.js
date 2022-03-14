@@ -14,6 +14,7 @@ export default async function handler(req, res) {
           name: req.query.name,
           value: req.query.name,
           description: req.query.description,
+          code: '',
           createdAt: new Date(),
         });
         return res.json({
