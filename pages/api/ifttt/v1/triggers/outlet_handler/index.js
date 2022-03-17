@@ -13,8 +13,35 @@ export default async function handler(req, res) {
       try {
         //   console.log(req.data)
         const responseJson = await fetchUser(req);
+        if (typeof responseJson.error !== "undefined") {
+          return res.status(401).json({
+            success: false,
+            errors: [{ message: "Invalid Authentication Token" }],
+          });
+        }
+
         let { db } = await connectToDatabase();
-        console.log(responseJson.email);
+        console.log(req.body);
+        if (
+          typeof req.body.triggerFields === "undefined" ||
+          typeof req.body.triggerFields.name === "undefined"
+        ) {
+          return res.status(400).json({
+            success: false,
+            errors: [{ message: "Missing TriggerFields or TriggerFields Key" }],
+          });
+        }
+        // handle limit 1 or 0
+        let limit = 50;
+        if (typeof req.body.limit !== "undefined") {
+          limit = req.body.limit;
+          if (limit == 0)
+            return res.status(200).json({
+              data: [],
+              success: true,
+            });
+        }
+        // handle missing triggerfield
 
         let outlets = await db
           .collection("events")
@@ -25,7 +52,7 @@ export default async function handler(req, res) {
             ],
           })
           .sort({ created_at: -1 })
-          .limit(50)
+          .limit(limit)
           .toArray();
 
         return res.status(200).json({
