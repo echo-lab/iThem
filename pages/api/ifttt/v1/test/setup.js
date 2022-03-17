@@ -6,7 +6,7 @@ export default async function handler(req, res) {
           if(req.headers['ifttt-service-key']=="iuLesxDNlW33TMnaeS3BWg3ipN2suKMSEj5bhTkl1n3ZdcfuDx3eHdQsG4JPBspb")
           res.status(200).json({
             "data": {
-              "accessToken": "ya29.A0ARrdaM9gxH97_GO0YelM5lq84ER611bA0JGvE-CWusCJ9U9Y_cpcRVfy8rDwuRiEeChGZZbwu81GJkaLAx5b0Wr8P_1PHXYORs-TjpJsAHb7tLwWW6rGuJXXJY3HqRVwGtEIj4fSstzKzccs0uP61946UzZaZ-uQVj4",
+              "accessToken": "ya29.A0ARrdaM-Nq1tB20qDRSQWoUKt5EAFFhsjuV5CekMnR70VpY1QlH-fywCn3BVqbKZl4Gbd49Qd4dUCb8rWToGqkFlqWwqA9vrKhEn9kyY99n3ZoCuYL8794RYIuxyAz00pgxTQczY8lT3I0k4QTL6BFMQaVf0JRr0LACCqxQ",
               "samples": {
                 "triggers": {
                   "outlet_handler": {
