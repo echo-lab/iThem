@@ -11,7 +11,7 @@ export default async function handler(req, res) {
         let inlets = await db
           .collection("events")
           .find({ email: req.query.email })
-          .sort({ published: -1 })
+          .sort({ _id: -1 })
           .toArray();
         // return the posts
         return res.json({
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     case "DELETE": {
       try {
         let inlets = await db.collection("events").deleteOne({
-          _id: new ObjectId(req.query.id), 
+          _id: new ObjectId(req.query.id),
         });
         return res.json({
           message: JSON.parse(JSON.stringify(inlets)),
