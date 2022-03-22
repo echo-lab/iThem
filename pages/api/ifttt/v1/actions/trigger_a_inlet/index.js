@@ -1,18 +1,42 @@
 const { connectToDatabase } = require("../../../../../../lib/mongodb");
+import { fetchUser } from "../../../../../../lib/googleadapter";
+
 const ObjectId = require("mongodb").ObjectId;
 export default async function handler(req, res) {
   // switch the methods
   const { db } = await connectToDatabase();
   switch (req.method) {
     case "POST": {
-      const email = req.body.actionFields.data.email;
+      const responseJson = await fetchUser(req);
+      if (typeof responseJson.error !== "undefined") {
+        return res.status(401).json({
+          success: false,
+          errors: [{ message: "Invalid Authentication Token" }],
+        });
+      }
 
+      if (typeof req.body.actionFields === "undefined") {
+        return res.status(400).json({
+          success: false,
+          errors: [{ message: "Missing ActionFields Key" }],
+        });
+      }
+
+      // const email = req.body.actionFields.data.email;
+
+      const email = responseJson.email;
       let inlet = await db
         .collection("inlets")
         .find({
           $and: [{ email: email }, { name: req.body.actionFields.inlet }],
         })
         .toArray();
+
+      if (inlet.length != 1)
+        return res.status(400).json({
+          success: false,
+          errors: [{ message: "Missing ActionFields Inlet" }],
+        });
 
       let outlets = await db
         .collection("outlets")
@@ -69,7 +93,7 @@ export default async function handler(req, res) {
           );
         }
       };
-
+      let eventID;
       const program = (name) => {
         const found = outlets.find((elm) => elm.name == name);
         if (typeof found === "undefined")
@@ -82,24 +106,27 @@ export default async function handler(req, res) {
             ],
           });
         else {
+          const metaID = new ObjectId();
           fetch(
-            `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${name}`,
+            `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${name}&metaID=${metaID}`,
             {
               method: "POST",
             }
           );
+          eventID = metaID;
         }
       };
 
-      if (inlet.length != 1)
-        return res.status(400).json({
-          success: false,
-        });
       eval(inlet[0].code);
-
+      // console.log("--------------------");
       try {
         return res.status(200).json({
           success: true,
+          data: [
+            {
+              id: eventID,
+            },
+          ],
         });
       } catch (error) {
         return res.json({

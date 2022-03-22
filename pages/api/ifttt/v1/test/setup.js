@@ -9,7 +9,7 @@ export default async function handler(req, res) {
         res.status(200).json({
           data: {
             accessToken:
-              "ya29.A0ARrdaM9GL3HVp22gKKaiJ3T66EKKzdmaagtlPpVS2YEklE1OdWf1wJ4xk_njQCO1k0-1rgLe8ouiy6MbsnrjNfk6B4ZGwX1OUInudmUfGGFHsnoIB0AAEiXr1osgGwky5aO0Y3yu4w50dvJvVc1jjwrEQKSWYS8qrCi7Yg",
+              "ya29.A0ARrdaM_Q21GMXJPlGceh8tnIGno4EF0aNbYnSwyqBYQN_P42-ctxGsftsk0WONYZ8Fm4QBcJVE7cCk8LFhhrGCo5AmHOYsRi7OTYNQkNpw-3E4_ykruWBhPGty2_L-bnulIgf-_kwRE4ZjRmpiJaLZEjrzODVLIg7ZiiWw",
             samples: {
               triggers: {
                 outlet_handler: {

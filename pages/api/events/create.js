@@ -14,7 +14,7 @@ export default async function handler(req, res) {
           note: req.query.name,
           created_at: new Date(),
           meta: {
-            id: new ObjectId(),
+            id: req.query.metaID,
             timestamp: Math.round(new Date().getTime() / 1000),
           },
         });
