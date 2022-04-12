@@ -23,7 +23,6 @@ export default async function handler(req, res) {
       }
 
       // const email = req.body.actionFields.data.email;
-
       const email = responseJson.email;
       let inlet = await db
         .collection("inlets")
@@ -51,6 +50,8 @@ export default async function handler(req, res) {
           $and: [{ email: email }],
         })
         .toArray();
+      let data = req.body.actionFields.data;
+      console.log(data);
 
       const load = (value) => {
         const found = variables.find((elm) => elm.name == value);
@@ -77,6 +78,7 @@ export default async function handler(req, res) {
 
       const save = (value, name) => {
         const found = variables.find((elm) => elm.name == name);
+        console.log(found);
         if (typeof found === "undefined")
           return res.status(400).json({
             success: false,
