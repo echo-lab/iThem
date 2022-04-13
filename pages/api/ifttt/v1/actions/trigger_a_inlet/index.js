@@ -53,7 +53,7 @@ export default async function handler(req, res) {
       let data = req.body.actionFields.data;
       console.log(data);
 
-      const load = (value) => {
+      const ithemLoad = (value) => {
         const found = variables.find((elm) => elm.name == value);
         if (typeof found === "undefined")
           return res.status(400).json({
@@ -76,7 +76,7 @@ export default async function handler(req, res) {
         }
       };
 
-      const save = (value, name) => {
+      const ithemSave = (value, name) => {
         const found = variables.find((elm) => elm.name == name);
         console.log(found);
         if (typeof found === "undefined")
@@ -96,7 +96,7 @@ export default async function handler(req, res) {
         }
       };
       let eventID;
-      const program = (name) => {
+      const ithemCall = (name) => {
         const found = outlets.find((elm) => elm.name == name);
         if (typeof found === "undefined")
           return res.status(400).json({
