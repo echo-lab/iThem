@@ -95,31 +95,48 @@ export default async function handler(req, res) {
           );
         }
       };
-      let eventID;
+      let eventID = -1;
       const ithemCall = (name) => {
         const found = outlets.find((elm) => elm.name == name);
+        // if there're two outlets/variables that have the same name, only one of them will be called.
         if (typeof found === "undefined")
           return res.status(400).json({
             success: false,
             errors: [
               {
-                message: "In Function 'Program', variable used does not exist",
+                message:
+                  "In Function 'ithemCall', variable used does not exist",
               },
             ],
           });
         else {
-          const msg = "Outlet Triggered By ifttt";
+          const msg = "Outlet Triggered By IFTTT";
+          const type = "outlet";
           fetch(
-            `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${name}&note=${msg}`,
+            `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${name}&note=${msg}&type=${type}`,
             {
               method: "POST",
             }
-          );
-          eventID = metaID;
+          ).then((res) => {
+            eventID = res._id;
+          });
         }
       };
 
+      const handleInletLog = (inlet) => {
+        const msg = "Inlet Ran By IFTTT";
+        const type = "inlet";
+        fetch(
+          `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${inlet.name}&note=${msg}&type=${type}`,
+          {
+            method: "POST",
+          }
+        );
+      };
+
+      handleInletLog(inlet[0]);
       eval(inlet[0].code);
+
       // console.log("--------------------");
       try {
         return res.status(200).json({

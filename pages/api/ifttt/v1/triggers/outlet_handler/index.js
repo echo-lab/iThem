@@ -49,6 +49,7 @@ export default async function handler(req, res) {
             $and: [
               { email: responseJson.email },
               { name: req.body.triggerFields.name },
+              // { type: "outlet" },
             ],
           })
           .sort({ created_at: -1 })

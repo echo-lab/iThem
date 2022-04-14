@@ -1,6 +1,5 @@
 const { connectToDatabase } = require("../../../lib/mongodb");
 const ObjectId = require("mongodb").ObjectId;
-// const db = require('../../../lib/mongodb');
 export default async function handler(req, res) {
   // switch the methods
   const { db } = await connectToDatabase();
@@ -9,12 +8,12 @@ export default async function handler(req, res) {
     case "POST": {
       try {
         let inlets = await db.collection("inlets").insertOne({
-          label:req.query.name,
+          label: req.query.name,
           email: req.query.email,
           name: req.query.name,
           value: req.query.name,
           description: req.query.description,
-          code: '',
+          code: "",
           createdAt: new Date(),
         });
         return res.json({
