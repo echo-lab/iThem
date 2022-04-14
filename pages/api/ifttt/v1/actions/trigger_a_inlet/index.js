@@ -108,9 +108,9 @@ export default async function handler(req, res) {
             ],
           });
         else {
-          const metaID = new ObjectId();
+          const msg = "Outlet Triggered By ifttt";
           fetch(
-            `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${name}&metaID=${metaID}`,
+            `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${name}&note=${msg}`,
             {
               method: "POST",
             }
