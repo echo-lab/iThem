@@ -10,6 +10,7 @@ export default async function handler(req, res) {
     case "POST": {
       let email;
       let actionFields;
+      let data;
       if ("authorization" in req.headers) {
         const responseJson = await fetchUser(req);
         if (typeof responseJson.error !== "undefined") {
@@ -27,11 +28,14 @@ export default async function handler(req, res) {
 
         email = responseJson.email;
         actionFields = req.body.actionFields;
+
+        data = actionFields.data;
       } else {
         email = req.query.email;
 
         const body = JSON.parse(req.body);
         actionFields = body.actionFields;
+        data = JSON.parse(actionFields.data);
       }
 
       let inlet = await db
@@ -60,7 +64,6 @@ export default async function handler(req, res) {
           $and: [{ email: email }],
         })
         .toArray();
-      let data = actionFields.data;
 
       const ithemLoad = (value) => {
         const found = variables.find((elm) => elm.name == value);
