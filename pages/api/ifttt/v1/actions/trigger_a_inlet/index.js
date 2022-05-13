@@ -2,33 +2,42 @@ const { connectToDatabase } = require("../../../../../../lib/mongodb");
 import { fetchUser } from "../../../../../../lib/googleadapter";
 const { NodeVM } = require("vm2");
 
-
 const ObjectId = require("mongodb").ObjectId;
 export default async function handler(req, res) {
   // switch the methods
   const { db } = await connectToDatabase();
   switch (req.method) {
     case "POST": {
-      const responseJson = await fetchUser(req);
-      if (typeof responseJson.error !== "undefined") {
-        return res.status(401).json({
-          success: false,
-          errors: [{ message: "Invalid Authentication Token" }],
-        });
+      let email;
+      let actionFields;
+      if ("authorization" in req.headers) {
+        const responseJson = await fetchUser(req);
+        if (typeof responseJson.error !== "undefined") {
+          return res.status(401).json({
+            success: false,
+            errors: [{ message: "Invalid Authentication Token" }],
+          });
+        }
+        if (typeof req.body.actionFields === "undefined") {
+          return res.status(400).json({
+            success: false,
+            errors: [{ message: "Missing ActionFields Key" }],
+          });
+        }
+
+        email = responseJson.email;
+        actionFields = req.body.actionFields;
+      } else {
+        email = req.query.email;
+
+        const body = JSON.parse(req.body);
+        actionFields = body.actionFields;
       }
 
-      if (typeof req.body.actionFields === "undefined") {
-        return res.status(400).json({
-          success: false,
-          errors: [{ message: "Missing ActionFields Key" }],
-        });
-      }
-
-      const email = responseJson.email;
       let inlet = await db
         .collection("inlets")
         .find({
-          $and: [{ email: email }, { name: req.body.actionFields.inlet }],
+          $and: [{ email: email }, { name: actionFields.inlet }],
         })
         .toArray();
 
@@ -51,7 +60,7 @@ export default async function handler(req, res) {
           $and: [{ email: email }],
         })
         .toArray();
-      let data = req.body.actionFields.data;
+      let data = actionFields.data;
 
       const ithemLoad = (value) => {
         const found = variables.find((elm) => elm.name == value);
@@ -124,10 +133,9 @@ export default async function handler(req, res) {
       };
 
       const vm = new NodeVM({
-        sandbox:{ithemLoad, ithemCall, ithemSave}
+        sandbox: { ithemLoad, ithemCall, ithemSave, data },
       });
 
-      
       const handleInletLog = (inlet) => {
         const msg = "Inlet Ran By IFTTT";
         const type = "inlet";
