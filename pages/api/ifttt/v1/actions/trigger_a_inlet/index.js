@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
         const body = JSON.parse(req.body);
         actionFields = body.actionFields;
-        data = JSON.parse(actionFields.data);
+        data = actionFields.data;
       }
 
       let inlet = await db
