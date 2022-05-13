@@ -2,12 +2,6 @@ const { connectToDatabase } = require("../../../../../../lib/mongodb");
 import { fetchUser } from "../../../../../../lib/googleadapter";
 const { NodeVM } = require("vm2");
 
-const vm = new NodeVM({
-  require: {
-    external: true,
-    root: "./",
-  },
-});
 
 const ObjectId = require("mongodb").ObjectId;
 export default async function handler(req, res) {
@@ -30,7 +24,6 @@ export default async function handler(req, res) {
         });
       }
 
-      // const email = req.body.actionFields.data.email;
       const email = responseJson.email;
       let inlet = await db
         .collection("inlets")
@@ -130,6 +123,11 @@ export default async function handler(req, res) {
         }
       };
 
+      const vm = new NodeVM({
+        sandbox:{ithemLoad, ithemCall, ithemSave}
+      });
+
+      
       const handleInletLog = (inlet) => {
         const msg = "Inlet Ran By IFTTT";
         const type = "inlet";
@@ -142,7 +140,7 @@ export default async function handler(req, res) {
       };
 
       handleInletLog(inlet[0]);
-      eval(inlet[0].code);
+      // eval(inlet[0].code);
       vm.run(inlet[0].code);
       // console.log("--------------------");
       try {
