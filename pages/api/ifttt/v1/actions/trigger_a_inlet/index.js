@@ -1,5 +1,13 @@
 const { connectToDatabase } = require("../../../../../../lib/mongodb");
 import { fetchUser } from "../../../../../../lib/googleadapter";
+const { NodeVM } = require("vm2");
+
+const vm = new NodeVM({
+  require: {
+    external: true,
+    root: "./",
+  },
+});
 
 const ObjectId = require("mongodb").ObjectId;
 export default async function handler(req, res) {
@@ -51,7 +59,6 @@ export default async function handler(req, res) {
         })
         .toArray();
       let data = req.body.actionFields.data;
-      console.log(data);
 
       const ithemLoad = (value) => {
         const found = variables.find((elm) => elm.name == value);
@@ -136,7 +143,7 @@ export default async function handler(req, res) {
 
       handleInletLog(inlet[0]);
       eval(inlet[0].code);
-
+      vm.run(inlet[0].code);
       // console.log("--------------------");
       try {
         return res.status(200).json({
