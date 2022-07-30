@@ -1,6 +1,6 @@
 const { connectToDatabase } = require("../../../../../../lib/mongodb");
 import { fetchUser } from "../../../../../../lib/googleadapter";
-const { NodeVM } = require("vm2");
+const { NodeVM, VM } = require("vm2");
 
 const ObjectId = require("mongodb").ObjectId;
 export default async function handler(req, res) {
@@ -135,8 +135,9 @@ export default async function handler(req, res) {
         }
       };
 
-      const vm = new NodeVM({
-        sandbox: { ithemLoad, ithemCall, ithemSave, data },
+      const vm = new VM({
+        allowAsync:true,
+        sandbox: { ithemLoad, ithemCall, ithemSave, data, setTimeout: setTimeout, setInterval:setInterval, setImmediate:setImmediate },
       });
 
       const handleInletLog = (inlet) => {
