@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         const responseJson = await fetchUser(req)
         if('error' in responseJson)
           res.status(responseJson.error.code).json({errors:[responseJson.error]})
-        else res.status(200).json({data: {...responseJson, name:"Empty"}})
+        else res.status(200).json({data: {...responseJson, name:responseJson.email}})
       }
     }
   }
