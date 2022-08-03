@@ -9,10 +9,9 @@ export default async function handler(req, res) {
     case "POST": {
       try {
         let outlets = await db.collection("outlets").insertOne({
-          label: req.query.name,
           email: req.query.email,
           name: req.query.name,
-          data: req.query.name,
+          status: req.query.status === "true",
           description: req.query.description,
           createdAt: new Date(),
         });
@@ -21,7 +20,7 @@ export default async function handler(req, res) {
           success: true,
         });
       } catch (error) {
-        return res.json({
+        return res.status(400).json({
           message: new Error(error).message,
           success: false,
         });

@@ -8,10 +8,8 @@ export default async function handler(req, res) {
     case "POST": {
       try {
         let inlets = await db.collection("inlets").insertOne({
-          label: req.query.name,
           email: req.query.email,
           name: req.query.name,
-          value: req.query.name,
           description: req.query.description,
           code: "",
           createdAt: new Date(),
@@ -21,7 +19,7 @@ export default async function handler(req, res) {
           success: true,
         });
       } catch (error) {
-        return res.json({
+        return res.status(400).json({
           message: new Error(error).message,
           success: false,
         });

@@ -108,7 +108,7 @@ export default async function handler(req, res) {
         }
       };
       let eventID = -1;
-      const ithemCall = (name) => {
+      const ithemCall = (name, data) => {
         const found = outlets.find((elm) => elm.name == name);
         // if there're two outlets/variables that have the same name, only one of them will be called.
         if (typeof found === "undefined")
@@ -125,7 +125,7 @@ export default async function handler(req, res) {
           const msg = "Outlet Triggered By IFTTT";
           const type = "outlet";
           fetch(
-            `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${name}&note=${msg}&type=${type}`,
+            `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${name}&note=${msg}&type=${type}&data=${data}`,
             {
               method: "POST",
             }

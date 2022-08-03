@@ -43,13 +43,13 @@ export default async function handler(req, res) {
         }
         // handle missing triggerfield
 
-        let outlets = await db
+        let events = await db
           .collection("events")
           .find({
             $and: [
               { email: responseJson.email },
               { name: req.body.triggerFields.name },
-              // { type: "outlet" },
+              { status: true },
             ],
           })
           .sort({ created_at: -1 })
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
           .toArray();
 
         return res.status(200).json({
-          data: JSON.parse(JSON.stringify(outlets)),
+          data: JSON.parse(JSON.stringify(events)),
           success: true,
         });
       } catch (error) {
