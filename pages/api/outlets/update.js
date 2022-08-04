@@ -13,7 +13,7 @@ export default async function handler(req, res) {
           {
             _id: new ObjectId(req.query.id),
           },
-          { $set: { name: req.query.name } }
+          { $set: { status: req.query.status } }
         );
         return res.json({
           message: JSON.parse(JSON.stringify(outlets)),

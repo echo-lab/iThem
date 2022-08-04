@@ -122,7 +122,10 @@ export default async function handler(req, res) {
             ],
           });
         else {
-          const msg = "Outlet Triggered By IFTTT";
+          const msg = found.status
+            ? "Outlet Ran Manually by iThemCall(). [Passing on to IFTTT]"
+            : "Disabled Outlet Ran Manually by iThemCall().";
+
           const type = "outlet";
           fetch(
             `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${name}&note=${msg}&type=${type}&data=${data}`,
@@ -136,8 +139,16 @@ export default async function handler(req, res) {
       };
 
       const vm = new VM({
-        allowAsync:true,
-        sandbox: { ithemLoad, ithemCall, ithemSave, data, setTimeout: setTimeout, setInterval:setInterval, setImmediate:setImmediate },
+        allowAsync: true,
+        sandbox: {
+          ithemLoad,
+          ithemCall,
+          ithemSave,
+          data,
+          setTimeout: setTimeout,
+          setInterval: setInterval,
+          setImmediate: setImmediate,
+        },
       });
 
       const handleInletLog = (inlet) => {
@@ -150,8 +161,8 @@ export default async function handler(req, res) {
           }
         );
       };
+      if (!req.query.editor) handleInletLog(inlet[0]);
 
-      handleInletLog(inlet[0]);
       // eval(inlet[0].code);
       vm.run(inlet[0].code);
       // console.log("--------------------");
