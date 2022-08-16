@@ -107,6 +107,7 @@ export default async function handler(req, res) {
           );
         }
       };
+      console.log("break");
       let eventID = -1;
       let fStatus = 0;
       const ithemCall = (name, data) => {
@@ -132,7 +133,7 @@ export default async function handler(req, res) {
 
           const type = "outlet";
           fetch(
-            `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${name}&note=${msg}&type=${type}&data=${data}`,
+            `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${name}&note=${msg}&type=${type}&data=${data}&status=${found.status}`,
             {
               method: "POST",
             }
@@ -175,9 +176,10 @@ export default async function handler(req, res) {
             {
               id: eventID,
             },
-            {
-              foundstatus: fStatus,
-            },
+            // },
+            // {
+            //   foundstatus: fStatus,
+            // },
           ],
         });
       } catch (error) {
