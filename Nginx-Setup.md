@@ -1,5 +1,6 @@
 # How to set up self-hosted server for nodejs/nextjs app
 
+0. https renew: `certbot renew`
 1. set up nginx and its reverse proxy
     reverse proxy allows requests to be redirected to your app at localhost
     for instance, in this project ithem.cs.vt.edu, we use nginx to redirect request to ithem.cs.vt.edu to localhost:3000.

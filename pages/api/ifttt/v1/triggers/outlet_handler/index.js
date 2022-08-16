@@ -11,7 +11,6 @@ export default async function handler(req, res) {
     //   http://localhost:3000/api/inlets/update?name=new name&id=61e983a630328ac2f0cca0a4
     case "POST": {
       try {
-        //   console.log(req.data)
         const responseJson = await fetchUser(req);
         if (typeof responseJson.error !== "undefined") {
           return res.status(401).json({
@@ -19,9 +18,7 @@ export default async function handler(req, res) {
             errors: [{ message: "Invalid Authentication Token" }],
           });
         }
-
         let { db } = await connectToDatabase();
-        console.log(req.body);
         if (
           typeof req.body.triggerFields === "undefined" ||
           typeof req.body.triggerFields.name === "undefined"
@@ -49,7 +46,7 @@ export default async function handler(req, res) {
             $and: [
               { email: responseJson.email },
               { name: req.body.triggerFields.name },
-              { status: true },
+              { status: "true" },
             ],
           })
           .sort({ created_at: -1 })
@@ -66,6 +63,9 @@ export default async function handler(req, res) {
           success: false,
         });
       }
+    }
+    case "GET": {
+      return res.json("outlet_handler");
     }
   }
 }

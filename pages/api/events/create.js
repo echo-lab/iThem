@@ -16,6 +16,7 @@ export default async function handler(req, res) {
           name: req.query.name,
           note: req.query.note,
           type: req.query.type,
+          status:req.query.status,
           created_at: new Date(),
           meta: {
             id: _id,

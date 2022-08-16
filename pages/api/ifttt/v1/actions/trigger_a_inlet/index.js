@@ -108,8 +108,11 @@ export default async function handler(req, res) {
         }
       };
       let eventID = -1;
+      let fStatus = 0;
       const ithemCall = (name, data) => {
         const found = outlets.find((elm) => elm.name == name);
+        fStatus = found;
+
         // if there're two outlets/variables that have the same name, only one of them will be called.
         if (typeof found === "undefined")
           return res.status(400).json({
@@ -122,9 +125,10 @@ export default async function handler(req, res) {
             ],
           });
         else {
-          const msg = found.status
-            ? "Outlet Ran Manually by iThemCall(). [Passing on to IFTTT]"
-            : "Disabled Outlet Ran Manually by iThemCall().";
+          const msg =
+            found.status === "true"
+              ? "Outlet Ran Manually by iThemCall(). [Passing on to IFTTT]"
+              : "Disabled Outlet Ran Manually by iThemCall().";
 
           const type = "outlet";
           fetch(
@@ -163,15 +167,16 @@ export default async function handler(req, res) {
       };
       if (!req.query.editor) handleInletLog(inlet[0]);
 
-      // eval(inlet[0].code);
       vm.run(inlet[0].code);
-      // console.log("--------------------");
       try {
         return res.status(200).json({
           success: true,
           data: [
             {
               id: eventID,
+            },
+            {
+              foundstatus: fStatus,
             },
           ],
         });
