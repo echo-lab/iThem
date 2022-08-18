@@ -17,7 +17,8 @@ export default async function handler(req, res) {
           note: req.query.note,
           type: req.query.type,
           status: req.query.status,
-          data: [{ data: req.query.data }],
+          // data: [{ data: req.query.data }],
+          data: req.query.data,
           created_at: new Date(),
 
           meta: {

@@ -21,8 +21,8 @@ export default async function handler(req, res) {
         const newIFTTTReponseObj = outlets.map(
           ({ name, description, ...e }) => ({
             ...e,
-            label: name,
-            value: description,
+            label: name,  // Could be description?
+            value: name,
           })
         );
         res.json({
