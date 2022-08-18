@@ -166,12 +166,9 @@ export default async function handler(req, res) {
           ],
         });
       } catch (error) {
-        // TODO: check typeof error??? If it's a syntax error, we can probably get some information out of it
-        // and display it to the user.
-        console.error(error);
         return res.status(200).json({
           success: true,
-          error
+          error: (typeof error === "object" && error.message) ? error.message : error,
         });
       }
     }
