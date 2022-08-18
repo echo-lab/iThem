@@ -67,14 +67,9 @@ export default async function handler(req, res) {
 
       const ithemLoad = (value) => {
         const found = variables.find((elm) => elm.name == value);
-        if (typeof found === "undefined")
-          return res.status(400).json({
-            success: false,
-            errors: [
-              { message: "In Function 'load', variable used does not exist" },
-            ],
-          });
-        else {
+        if (typeof found === "undefined") {
+          throw `Error: ithemLoad("${value}": state "${value}" does not exist.)`;
+        } else {
           switch (found.type) {
             case "int":
               return +found.value;
@@ -90,15 +85,10 @@ export default async function handler(req, res) {
 
       const ithemSave = (value, name) => {
         const found = variables.find((elm) => elm.name == name);
-        console.log(found);
-        if (typeof found === "undefined")
-          return res.status(400).json({
-            success: false,
-            errors: [
-              { message: "In Function 'save', variable used does not exist" },
-            ],
-          });
-        else {
+        // console.log(found);
+        if (typeof found === "undefined") {
+          throw `Error: ithemSave(): state "${name}" does not exist.)`;
+        } else {
           fetch(
             `https://ithem.cs.vt.edu/api/var/update?id=${found._id}&value=${value}`,
             {
@@ -107,7 +97,7 @@ export default async function handler(req, res) {
           );
         }
       };
-      console.log("break");
+      // console.log("break");
       let eventID = -1;
       let fStatus = 0;
       const ithemCall = (name, data) => {
@@ -115,17 +105,9 @@ export default async function handler(req, res) {
         fStatus = found;
 
         // if there're two outlets/variables that have the same name, only one of them will be called.
-        if (typeof found === "undefined")
-          return res.status(400).json({
-            success: false,
-            errors: [
-              {
-                message:
-                  "In Function 'ithemCall', variable used does not exist",
-              },
-            ],
-          });
-        else {
+        if (typeof found === "undefined") {
+          throw `ithemCall() error: outlet "${name}" does not exist`;
+        } else {
           const msg =
             found.status === "true"
               ? "Outlet Ran Manually by iThemCall(). [Passing on to IFTTT]"
@@ -168,24 +150,23 @@ export default async function handler(req, res) {
       };
       if (!req.query.editor) handleInletLog(inlet[0]);
 
-      vm.run(inlet[0].code);
       try {
+        vm.run(inlet[0].code);
         return res.status(200).json({
           success: true,
           data: [
             {
               id: eventID,
             },
-            // },
             // {
             //   foundstatus: fStatus,
             // },
           ],
         });
       } catch (error) {
-        return res.json({
-          message: new Error(error).message,
-          success: false,
+        return res.status(200).json({
+          success: true,
+          error
         });
       }
     }
