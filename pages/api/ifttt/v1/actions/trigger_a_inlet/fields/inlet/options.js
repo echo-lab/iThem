@@ -23,8 +23,9 @@ export default async function handler(req, res) {
         const newIFTTTReponseObj = inlets.map(
           ({ name, description, ...e }) => ({
             ...e,
+            // Label is what shows in the IFTTT drop-down. Could be description or name.
             label: name,
-            value: description,
+            value: name,
           })
         );
         // return the posts

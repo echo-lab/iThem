@@ -20,6 +20,7 @@ export default async function handler(req, res) {
           });
         }
         if (typeof req.body.actionFields === "undefined") {
+          console.error("1) Missing req.body.actionFields. req.body is: ", req.body);
           return res.status(400).json({
             success: false,
             errors: [{ message: "Missing ActionFields Key" }],
@@ -45,11 +46,12 @@ export default async function handler(req, res) {
         })
         .toArray();
 
-      if (inlet.length != 1)
+      if (inlet.length != 1) {
         return res.status(400).json({
           success: false,
           errors: [{ message: "Missing ActionFields Inlet" }],
         });
+      }
 
       let outlets = await db
         .collection("outlets")
