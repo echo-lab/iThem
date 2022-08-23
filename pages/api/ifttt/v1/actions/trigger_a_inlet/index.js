@@ -127,12 +127,20 @@ export default async function handler(req, res) {
         }
       };
 
+      let _log = [];
+      const ithemLog = function(...args) {
+        _log.push(
+          args.map(s => typeof s === "object" ? JSON.stringify(s) : "" + s).join(" ")
+        );
+      };
+
       const vm = new VM({
         allowAsync: true,
         sandbox: {
           ithemLoad,
           ithemCall,
           ithemSave,
+          ithemLog,
           data,
           setTimeout: setTimeout,
           setInterval: setInterval,
@@ -156,6 +164,7 @@ export default async function handler(req, res) {
         vm.run(inlet[0].code);
         return res.status(200).json({
           success: true,
+          ithemLog: _log,
           data: [
             {
               id: eventID,
@@ -168,6 +177,7 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(200).json({
           success: true,
+          ithemLog: _log,
           error: (typeof error === "object" && error.message) ? error.message : error,
         });
       }
