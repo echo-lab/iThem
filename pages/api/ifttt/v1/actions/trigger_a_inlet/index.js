@@ -67,38 +67,64 @@ export default async function handler(req, res) {
         })
         .toArray();
 
+      // variables stored as strings... so lets fix that here.
+      variables.forEach(v => {
+        if (v.type === "boolean") {
+          v.value = v.value === "true";
+        } else if (v.type === "int") {
+          v.value = parseInt(v.value);
+        } else if (v.type === "double") {
+          v.value = parseFloat(v.value);
+        }
+      });
+
       const ithemLoad = (value) => {
         const found = variables.find((elm) => elm.name == value);
         if (typeof found === "undefined") {
           throw `Error: ithemLoad("${value}": state "${value}" does not exist.)`;
-        } else {
-          switch (found.type) {
-            case "int":
-              return +found.value;
-            case "double":
-              return +found.value;
-            case "boolean":
-              return found.value == "TRUE";
-            default:
-              return found.value;
-          }
         }
+        return found.value;
+        //  else {
+        //   switch (found.type) {
+        //     case "int":
+        //       return +found.value;
+        //     case "double":
+        //       return +found.value;
+        //     case "boolean":
+        //       return found.value;
+        //     default:
+        //       return found.value;
+        //   }
+        // }
       };
 
-      const ithemSave = (value, name) => {
+      const ithemSave = async function(val, name) {
         const found = variables.find((elm) => elm.name == name);
         // console.log(found);
         if (typeof found === "undefined") {
           throw `Error: ithemSave(): state "${name}" does not exist.)`;
-        } else {
-          fetch(
-            `https://ithem.cs.vt.edu/api/var/update?id=${found._id}&value=${value}`,
-            {
-              method: "POST",
-            }
-          );
         }
+
+        const type = found.type;
+        if (type === "boolean" && !(true === val || false === val)) {
+          throw `ithemSave(${val}, "${name}") failed: ${val} is not a boolean.`;
+        } else if (type in ["int", "double"] && typeof val !== "number") {
+          throw `ithemSave(${val}, "${name}") failed: ${val} is not a number.`;
+        } else if (type === "int") {
+          val = parseInt(val);
+        } 
+
+        // Want to wait until we actually update the variable in the database to continue
+        await fetch(
+          `https://ithem.cs.vt.edu/api/var/update?id=${found._id}&value=${val}`,
+          {
+            method: "POST",
+          }
+        );
+        // IMPORTANT: update the value here, too, so if we do ithemLoad() again it's not stale.
+        found.value = val;
       };
+
       // console.log("break");
       let eventID = -1;
       let fStatus = 0;
