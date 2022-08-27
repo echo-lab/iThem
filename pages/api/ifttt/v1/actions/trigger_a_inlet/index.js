@@ -98,31 +98,32 @@ export default async function handler(req, res) {
         // }
       };
 
-      const ithemSave = async function(val, name) {
+      const ithemSave = (val, name) => {
         const found = variables.find((elm) => elm.name == name);
         // console.log(found);
+        // console.error(name, ":", found);
         if (typeof found === "undefined") {
-          throw `Error: ithemSave(): state "${name}" does not exist.)`;
+          throw Error(`Error: ithemSave(): state "${name}" does not exist.)`);
         }
 
         const type = found.type;
         if (type === "boolean" && !(true === val || false === val)) {
-          throw `ithemSave(${val}, "${name}") failed: ${val} is not a boolean.`;
-        } else if (type in ["int", "double"] && typeof val !== "number") {
-          throw `ithemSave(${val}, "${name}") failed: ${val} is not a number.`;
+          throw Error(`ithemSave(${val}, "${name}") failed: ${val} is not a boolean.`);
+        } else if (["int", "double"].includes(type) && typeof val !== "number") {
+          throw Error(`ithemSave(${val}, "${name}") failed: ${val} is not a number.`);
         } else if (type === "int") {
           val = parseInt(val);
         } 
 
-        // Want to wait until we actually update the variable in the database to continue
-        await fetch(
+        // Would be good to actually await here, but it makes throwing errors problematic, so....
+        // Let's just update the value and hope the fetch() works!
+        found.value = val;
+        fetch(
           `https://ithem.cs.vt.edu/api/var/update?id=${found._id}&value=${val}`,
           {
             method: "POST",
           }
         );
-        // IMPORTANT: update the value here, too, so if we do ithemLoad() again it's not stale.
-        found.value = val;
       };
 
       // console.log("break");
