@@ -151,6 +151,22 @@ export default async function handler(req, res) {
     );
   };
 
+  // TODO: if we have to many things scheduled, this should throw an error.
+  // We can fetch the currently scheduled things above.
+  const ithemSchedule = (outlet, time, data) => {
+    console.log("Scheduling: ", outlet, time, data);
+    // Ideally we'd use await, but... if I recall, we cannot :)
+    db.collection("sched").insertOne({
+      email,
+      outletName: outlet,
+      outletArg: data,
+      schedTime: time,
+      executed: false,
+      createdAt: new Date(),
+    }).then(res=> {
+      console.log("DID IT", res);
+    });
+  };
 
   const handleInletLog = (inlet) => {
     const msg = "Inlet Ran By IFTTT";
@@ -171,6 +187,7 @@ export default async function handler(req, res) {
       ithemCall,
       ithemSave,
       ithemLog,
+      ithemSchedule,
       data,
       setTimeout: setTimeout,
       setInterval: setInterval,
