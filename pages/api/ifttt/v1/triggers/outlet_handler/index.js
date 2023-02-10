@@ -18,6 +18,10 @@ export default async function handler(req, res) {
             errors: [{ message: "Invalid Authentication Token" }],
           });
         }
+
+        // TODO: Move this to a cron-job somewhere else? Possibly keep it here, too.
+        await fetch('https://ithem.cs.vt.edu/api/scheduled/poll');
+
         let { db } = await connectToDatabase();
         if (
           typeof req.body.triggerFields === "undefined" ||
