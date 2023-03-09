@@ -20,7 +20,7 @@ export default function Home() {
           <Col span={3}></Col>
           <Col align="middle" span={18}>
             <Title>iThem</Title>
-            <p>GENERATING MORE STRUCTURED RULES</p>
+            <p>SCRIPTING WITH TRIGGERS AND ACTIONS</p>
             <Controller></Controller>
           </Col>
           <Col span={3}></Col>
