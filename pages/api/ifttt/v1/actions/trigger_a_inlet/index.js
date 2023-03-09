@@ -2,6 +2,8 @@ const { connectToDatabase } = require("../../../../../../lib/mongodb");
 import { fetchUser } from "../../../../../../lib/googleadapter";
 const { NodeVM, VM } = require("vm2");
 
+const MAX_SCHEDULED = 10;
+
 const ObjectId = require("mongodb").ObjectId;
 export default async function handler(req, res) {
   if (req.method !== "POST") return;
@@ -66,6 +68,8 @@ export default async function handler(req, res) {
       $and: [{ email: email }],
     })
     .toArray();
+
+  let scheduledCount = await db.collection("sched").countDocuments({email});
 
   // variables stored as strings... so lets fix that here.
   variables.forEach(v => {
@@ -161,6 +165,13 @@ export default async function handler(req, res) {
   // We can fetch the currently scheduled things above.
   const ithemSchedule = (outlet, time, data) => {
     console.log("Scheduling: ", outlet, time, data);
+    if (!outlets.find((e) => e.name === outlet)) {
+      throw `ithemSchedule() error: outlet "${outlet}" does not exist`;
+    } else if (scheduledCount >= MAX_SCHEDULED) {
+      throw `ithemSchedule() error: cannot schedule more than ${MAX_SCHEDULED} outstanding outlet calls.`;
+    }
+    scheduledCount++;
+
     // Ideally we'd use await, but... if I recall, we cannot :)
     db.collection("sched").insertOne({
       email,
