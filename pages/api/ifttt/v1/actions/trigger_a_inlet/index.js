@@ -78,9 +78,15 @@ export default async function handler(req, res) {
     }
   });
 
-  ////////////////////////////////////////////////////////////////////
-  // Define our API Functions: ithemLoad, ithemSave, and ithemCall. //
-  ////////////////////////////////////////////////////////////////////
+  /* ///////////////////////
+  Define our API Functions:
+    ithemLoad
+    ithemSave
+    ithemCall
+    ithemLog
+    ithemSchedule
+    Now, Hours, Minutes, Days
+  */ ////////////////////////
   const ithemLoad = (value) => {
     const found = variables.find((elm) => elm.name == value);
     if (typeof found === "undefined") {
@@ -168,6 +174,12 @@ export default async function handler(req, res) {
     });
   };
 
+  const Now = () => new Date().getTime();
+  const Seconds = (x) => x*1000;
+  const Minutes = (x) => Seconds(x)*60;
+  const Hours = (x) => Minutes(x)*60;
+  const Days = (x) => Hours(x)*24;
+
   const handleInletLog = (inlet) => {
     const msg = "Inlet Ran By IFTTT";
     const type = "inlet";
@@ -188,6 +200,7 @@ export default async function handler(req, res) {
       ithemSave,
       ithemLog,
       ithemSchedule,
+      Now, Seconds, Minutes, Hours, Days,
       data,
       setTimeout: setTimeout,
       setInterval: setInterval,
