@@ -32,13 +32,13 @@ export default async function handler(req, res) {
     email = responseJson.email;
     actionFields = req.body.actionFields;
 
-    data = actionFields.data;
+    data = actionFields.data || "";
   } else {
     email = req.query.email;
 
     const body = JSON.parse(req.body);
     actionFields = body.actionFields;
-    data = actionFields.data;
+    data = actionFields.data || "";
   }
 
   let inlet = await db
