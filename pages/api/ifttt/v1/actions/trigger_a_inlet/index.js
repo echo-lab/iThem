@@ -203,6 +203,12 @@ export default async function handler(req, res) {
   };
   if (!req.query.editor) handleInletLog(inlet[0]);
 
+  // This is necessary to catch async errors that aren't caught by the try/catch surrounding vm.run().
+  // Unfortunately, these errors silently fails for the user, but if we don't have this, we can bring down the server :)
+  process.on('uncaughtException', (err) => {
+    console.error('Asynchronous error caught.', err);
+  });
+
   const vm = new VM({
     allowAsync: true,
     sandbox: {
@@ -213,6 +219,7 @@ export default async function handler(req, res) {
       ithemSchedule,
       Now, Seconds, Minutes, Hours, Days,
       data,
+      fetch,
       setTimeout: setTimeout,
       setInterval: setInterval,
       setImmediate: setImmediate,
