@@ -9,8 +9,8 @@ export default async function handler(req, res) {
       try {
         let inlets = await db.collection("inlets").insertOne({
           email: req.query.email,
-          name: req.query.name,
-          description: req.query.description,
+          name: decodeURIComponent(req.query.name),
+          description: decodeURIComponent(req.query.description),
           code: "",
           createdAt: new Date(),
         });

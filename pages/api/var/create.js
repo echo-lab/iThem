@@ -31,6 +31,10 @@ export default async function handler(req, res) {
             }
             val = parseInt(val);
             break;
+          case "JSON":
+            break;
+          //   val = JSON.parse(val);
+          //   break;
           case "string":
             break;
           default:

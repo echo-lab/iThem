@@ -9,6 +9,11 @@ export default async function handler(req, res) {
     //   http://localhost:3000/api/inlets/update?name=new name&id=61e983a630328ac2f0cca0a4
     case "POST": {
       try {
+        // let v = await db.collection("variables").findOne({_id: new ObjectId(req.query.id)});
+        // let value = req.query.value;
+        // if (v.type === "JSON") {
+        // }
+
         let inlets = await db.collection("variables").updateOne(
           {
             _id: new ObjectId(req.query.id),

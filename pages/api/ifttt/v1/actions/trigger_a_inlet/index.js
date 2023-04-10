@@ -2,7 +2,7 @@ const { connectToDatabase } = require("../../../../../../lib/mongodb");
 import { fetchUser } from "../../../../../../lib/googleadapter";
 const { NodeVM, VM } = require("vm2");
 
-const MAX_SCHEDULED = 10;
+const MAX_SCHEDULED = 25;
 
 const ObjectId = require("mongodb").ObjectId;
 export default async function handler(req, res) {
@@ -48,6 +48,11 @@ export default async function handler(req, res) {
     })
     .toArray();
 
+  let inlets = await db
+    .collection("inlets")
+    .find({email})
+    .toArray();
+
   if (inlet.length != 1) {
     return res.status(400).json({
       success: false,
@@ -79,42 +84,51 @@ export default async function handler(req, res) {
       v.value = parseInt(v.value);
     } else if (v.type === "double") {
       v.value = parseFloat(v.value);
+    } else if (v.type === "JSON") {
+      console.warn("JSON: ", v.value);
+      try {
+        v.value = JSON.parse(v.value);
+      } catch (e) {
+        v.value = "PARSE_ERROR";
+      }
     }
   });
 
   /* ///////////////////////
   Define our API Functions:
-    ithemLoad
-    ithemSave
-    ithemCall
+    loadState
+    saveState
+    callOutlet
     ithemLog
-    ithemSchedule
+    scheduleOutlet
     Now, Hours, Minutes, Days
   */ ////////////////////////
-  const ithemLoad = (value) => {
+  const loadState = (value) => {
     const found = variables.find((elm) => elm.name == value);
     if (typeof found === "undefined") {
-      throw `Error: ithemLoad("${value}": state "${value}" does not exist.)`;
+      throw `Error: loadState("${value}": state "${value}" does not exist.)`;
     }
     return found.value;
   };
 
-  const ithemSave = (val, name) => {
+  const saveState = (val, name) => {
     const found = variables.find((elm) => elm.name == name);
     // console.log(found);
     // console.error(name, ":", found);
     if (typeof found === "undefined") {
-      throw Error(`Error: ithemSave(): state "${name}" does not exist.)`);
+      throw Error(`Error: saveState(): state "${name}" does not exist.)`);
     }
 
     const type = found.type;
     if (type === "boolean" && !(true === val || false === val)) {
-      throw Error(`ithemSave(${val}, "${name}") failed: ${val} is not a boolean.`);
+      throw Error(`saveState(${val}, "${name}") failed: ${val} is not a boolean.`);
     } else if (["int", "double"].includes(type) && typeof val !== "number") {
-      throw Error(`ithemSave(${val}, "${name}") failed: ${val} is not a number.`);
+      throw Error(`saveState(${val}, "${name}") failed: ${val} is not a number.`);
     } else if (type === "int") {
       val = parseInt(val);
-    } 
+    } else if (type === "JSON") {
+      val = JSON.stringify(val);
+    }
 
     // Would be good to actually await here, but it makes throwing errors problematic, so....
     // Let's just update the value and hope the fetch() works!
@@ -129,18 +143,18 @@ export default async function handler(req, res) {
 
   let eventID = -1;
   let fStatus = 0;
-  const ithemCall = (name, data) => {
+  const callOutlet = (name, data) => {
     const found = outlets.find((elm) => elm.name == name);
     fStatus = found;
 
     // if there're two outlets/variables that have the same name, only one of them will be called.
     if (typeof found === "undefined") {
-      throw `ithemCall() error: outlet "${name}" does not exist`;
+      throw `callOutlet() error: outlet "${name}" does not exist`;
     } else {
       const msg =
         found.status === "true"
-          ? "Outlet Ran Manually by iThemCall(). [Passing on to IFTTT]"
-          : "Disabled Outlet Ran Manually by iThemCall().";
+          ? "Outlet Ran Manually by callOutlet(). [Passing on to IFTTT]"
+          : "Disabled Outlet Ran Manually by callOutlet().";
 
       const type = "outlet";
       fetch(
@@ -163,12 +177,15 @@ export default async function handler(req, res) {
 
   // TODO: if we have to many things scheduled, this should throw an error.
   // We can fetch the currently scheduled things above.
-  const ithemSchedule = (outlet, time, data) => {
+  const scheduleOutlet = (outlet, time, data) => {
+    if (typeof time === 'object') {
+      time = time.getTime ? time.getTime() : 0;
+    }
     console.log("Scheduling: ", outlet, time, data);
     if (!outlets.find((e) => e.name === outlet)) {
-      throw `ithemSchedule() error: outlet "${outlet}" does not exist`;
+      throw `scheduleOutlet() error: outlet "${outlet}" does not exist`;
     } else if (scheduledCount >= MAX_SCHEDULED) {
-      throw `ithemSchedule() error: cannot schedule more than ${MAX_SCHEDULED} outstanding outlet calls.`;
+      throw `scheduleOutlet() error: cannot schedule more than ${MAX_SCHEDULED} outstanding inlet/outlet calls.`;
     }
     scheduledCount++;
 
@@ -184,6 +201,43 @@ export default async function handler(req, res) {
       console.log("DID IT", res);
     });
   };
+
+  const triggerInlet = (inletName, data) => {
+    // This won't actually run it for now lol
+    if (!inlets.find((x)=> x.name === inletName)) {
+      throw `triggerInlet() error: inlet "${inletName}" does not exist`;
+    }
+    const msg = `Inlet triggered from code in inlet ${inlet.name}`;
+    fetch(
+      `https://ithem.cs.vt.edu/api/events/create?email=${email}&name=${inletName}&note=${msg}&type=inlet`,
+      { method: "POST" }
+    );
+  };
+
+  const scheduleInlet = (inlet, time, data) => {
+    if (typeof time === 'object') {
+      time = time.getTime ? time.getTime() : 0;
+    }
+    if (!inlets.find((e) => e.name === inlet)) {
+      throw `scheduleInlet() error: inlet "${inlet}" does not exist`;
+    } else if (scheduledCount >= MAX_SCHEDULED) {
+      throw `scheduleInlet() error: cannot schedule more than ${MAX_SCHEDULED} outstanding inlet/outlet calls.`;
+    }
+    scheduledCount++;
+
+    // Ideally we'd use await, but... if I recall, we cannot :)
+    db.collection("sched").insertOne({
+      email,
+      inletName: inlet,
+      inletArg: data || "",
+      schedTime: time,
+      executed: false,
+      createdAt: new Date(),
+    }).then(res=> {
+      console.log("DID IT", res);
+    });
+
+  }
 
   const Now = () => new Date().getTime();
   const Seconds = (x) => x*1000;
@@ -212,11 +266,13 @@ export default async function handler(req, res) {
   const vm = new VM({
     allowAsync: true,
     sandbox: {
-      ithemLoad,
-      ithemCall,
-      ithemSave,
+      loadState,
+      callOutlet,
+      saveState,
       ithemLog,
-      ithemSchedule,
+      scheduleOutlet,
+      scheduleInlet,
+      triggerInlet,
       Now, Seconds, Minutes, Hours, Days,
       data,
       fetch,
